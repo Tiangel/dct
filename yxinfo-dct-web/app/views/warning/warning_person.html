@@ -1,0 +1,82 @@
+<md-content style="background: transparent;">
+    <md-card flex="100" layout="column">
+        <md-card-header layout="column">
+            <search-button layout="row">
+                <md-input-container layout-margin>
+                    <md-button ng-click="toggleRightAdd()" class="md-fab md-mini app-add">
+                        <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                        <md-tooltip>新增联系人</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <div member_autocomplete></div>
+                <div search_btn></div>
+            </search-button>
+        </md-card-header>
+        <md-card-content>
+            <table ng-table="tableParams" class="table table-striped">
+                <tr ng-repeat="wa in $data">
+                    <td title="'序号'">{{ $index + 1 }}</td>
+                    <td title="'姓名'" class="col-md-6">{{wa.fname}}</td>
+                    <td title="'手机号'">{{wa.mobile}}</td>
+                    <td title="'预警项目'" ng-bind-html="wa.warnPersonItemDTOList | warn_item "></td>
+                    <td width="180px" style="padding:3px">
+   <!--                     <md-button class="md-fab app-modify md-mini" ng-click="toggleRightUpdate(wa)">
+                            <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
+                            <md-tooltip>更新</md-tooltip>
+                        </md-button>-->
+                        <md-button class="md-fab app-delete md-mini" id="delete{{wh.whId}}" ng-click="delete(wa)">
+                            <md-icon md-font-icon="zmdi zmdi-delete"></md-icon>
+                            <md-tooltip>删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+            </table>
+        </md-card-content>
+    </md-card>
+</md-content>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <form name="labForm" ng-submit="save()" novalidate="novalidate">
+            <input type="text" ng-show="false" ng-model="list.id">
+            <md-autocomplete md-floating-label="姓名"
+                             md-selected-item="memberSelected"
+                             md-no-cache="noCache"
+                             md-search-text-change="querySearchMember(input)"
+                             md-search-text="selectedText"
+                             md-items="w in querySearchMember(input)"
+                             md-item-text="w.realName"
+                             md-min-length="0"
+                            >
+                <md-item-template>
+                    <span md-highlight-text="input" md-highlight-flags="^i">{{w.realName}}</span>
+                </md-item-template>
+                <md-not-found>
+                    未检索到"{{selectedText}}".
+                </md-not-found>
+            </md-autocomplete>
+            <md-input-container class="md-block" flex-gt-sm>
+                <label >预警项目</label>
+                <md-select ng-model="warnSelected" ng-disabled="btnDisabled" multiple>
+                <md-option ng-repeat="warn in warnitemlist" ng-selected="list.warnPersonItemDTOList.itemNo==warn.itemNo"
+                           value="{{warn.itemNo}}" >{{warn.itemName}}</md-option>
+            </md-select>
+            </md-input-container>
+            <div layout="row" layout-align="center">
+                <md-input-container>
+                    <md-button type="submit" class="md-fab app-add md-mini" aria-label="保存">
+                        <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                        <md-tooltip>保存</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container>
+                    <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                        <md-tooltip>取消</md-tooltip>
+                    </md-button>
+                </md-input-container>
+            </div>
+        </form>
+    </md-content>
+</md-sidenav>

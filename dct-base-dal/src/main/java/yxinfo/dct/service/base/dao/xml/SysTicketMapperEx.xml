@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="yxinfo.dct.service.base.dao.mapper.SysTicketMapperEx" >
+  <insert id="replace" parameterType="yxinfo.dct.service.base.dao.model.SysTicket">
+    REPLACE INTO
+      sys_ticket ( ticket, create_at, user_key, use_at )
+    VALUES
+      ( #{ticket,jdbcType=CHAR}, #{createAt,jdbcType=TIMESTAMP}, #{userKey,jdbcType=INTEGER}, #{useAt,jdbcType=CHAR} )
+  </insert>
+</mapper>

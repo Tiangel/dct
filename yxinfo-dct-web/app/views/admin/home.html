@@ -1,0 +1,38 @@
+<!--<md-grid-list
+        md-cols-xs="1" md-cols-sm="2" md-cols-md="4" md-cols-gt-md="6"
+        md-row-height-gt-md="1:1" md-row-height="1:1"
+        md-gutter="12px" md-gutter-gt-sm="8px" style="text-align: center" align="center">
+    <md-grid-tile class="red"
+                  md-rowspan="2" md-colspan="2" md-colspan-sm="1" md-colspan-xs="1" style="text-align: center">
+        <div style="margin-left:30px;">领用预警</div>
+        <canvas id="pie" class="chart chart-pie" style="max-height: 192px;max-width:388px;"
+                chart-data="data" chart-labels="labels" chart-options="options" chart-colors="colors" ng-click="chartClick(1)">
+        </canvas>
+    </md-grid-tile>
+</md-grid-list>-->
+
+<md-content class="md-padding" layout-xs="column" layout="row">
+    <div flex-xs flex-gt-xs="40" layout="column" ng-repeat="ligthState in ligthStatus">
+        <md-card align="center" style="text-align:center">
+            <md-card-content layout="row">
+                <div ng-if="ligthState.color == 1" class="md-media-xl card-media" style="width: 100%;margin-top:30px;height: 120px;">
+                    <img src="images/icons/warn_green.png"/>
+                </div>
+                <div ng-if="ligthState.color == 2" class="md-media-xl card-media" style="width: 100%;margin-top:30px;height: 120px;">
+                    <img src="images/icons/warn_yellow.png"/>
+                </div>
+                <div ng-if="ligthState.color == 3" class="md-media-xl card-media" style="width: 100%;margin-top:30px;height: 120px;">
+                    <img src="images/icons/warn_red.png"/>
+                </div>
+            </md-card-content>
+            <md-card-title>
+                <md-card-title-text>
+                    <h3>{{ligthState.name}}</h3>
+                    <div layout="row" layout-align="center">
+                        <md-button md-no-ink class="md-primary" style="width:20%" ng-click="chartClick($index)">查看详情</md-button>
+                    </div>
+                </md-card-title-text>
+            </md-card-title>
+        </md-card>
+    </div>
+</md-content>

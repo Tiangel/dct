@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+
+    <properties resource="db.properties" />
+
+    <!-- 数据库驱动-->
+    <!--<classPathEntry  location="C:\Users\Administrator\.m2\repository\mysql\mysql-connector-java\5.1.39\mysql-connector-java-5.1.39.jar"/>-->
+    <classPathEntry  location="F:\Maven\repository\mysql\mysql-connector-java\5.1.39\mysql-connector-java-5.1.39.jar"/>
+
+
+    <context id="DB2Tables"  targetRuntime="MyBatis3">
+
+        <plugin type="yxinfo.dct.framework.mybatis.generator.PaginationPlugin"/>
+        <plugin type="yxinfo.dct.framework.mybatis.generator.InsertResultKeyPlugin"/>
+
+
+        <commentGenerator type="yxinfo.dct.framework.mybatis.generator.DctCommentGenerator">
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="false"/>
+        </commentGenerator>
+        <!--数据库链接URL，用户名、密码 -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="${db_url}" userId="${db_username}" password="${db_password}">
+        </jdbcConnection>
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+
+        <!-- 生成模型的包名和位置-->
+        <javaModelGenerator targetPackage="yxinfo.dct.service.base.dao.model" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+        <!-- 生成映射文件的包名和位置-->
+
+        <sqlMapGenerator targetPackage="yxinfo.dct.service.base.dao.xml" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+        <!-- 生成DAO的包名和位置-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="yxinfo.dct.service.base.dao.mapper" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <!-- 要生成哪些表-->
+        <!--<table tableName="sys_member"  />-->
+        <!--<table tableName="sys_access_tok"  />-->
+        <!--<table tableName="sys_group"  />-->
+        <!--<table tableName="sys_member_group"  />-->
+        <!--<table tableName="sys_org"  />-->
+        <!--<table tableName="sys_member_org"  />-->
+        <!--<table tableName="sys_access_tok"  />-->
+        <!--<table tableName="sys_app_menu"  />-->
+        <!--<table tableName="sys_role_app_menu"  />-->
+        <!--<table tableName="sys_member_tag"  />-->
+        <!--<table tableName="sys_tag"  />-->
+        <!--<table tableName="sys_role"  />-->
+        <!--<table tableName="sys_member_org_role"  />-->
+        <!--<table tableName="sys_role_menu"/>-->
+        <!--<table tableName="sys_menu"/>-->
+        <!--<table tableName="sys_ticket"/>-->
+        <!--<table tableName="sys_org_bop"/>-->
+        <!--<table tableName="sys_org_fee"/>-->
+        <!--<table tableName="sys_fee"/>-->
+        <!--<table tableName="sys_org_terminal"/>-->
+        <!--<table tableName="sys_org_customized"/>-->
+        <!--<table tableName="sys_mbr_input"/>-->
+    </context>
+</generatorConfiguration>

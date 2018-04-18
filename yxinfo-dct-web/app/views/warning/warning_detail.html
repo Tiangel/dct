@@ -1,0 +1,245 @@
+<md-content style="background: transparent;">
+    <md-card flex="100" layout="column">
+        <md-card-content>
+            <md-input-container layout-margin>
+                <md-button class="md-raised md-mini" ng-disabled="btnDisabled" ng-click="goBack(from)">
+                    <md-icon md-font-icon="zmdi zmdi-undo"></md-icon>
+                    <md-tooltip>返回</md-tooltip>
+                </md-button>
+            </md-input-container>
+            <div layout="row">
+                <h3 style="margin-left:100px;">{{fcontext}}</h3>
+                <div ng-show="recoveryShowBtn" style="margin-left:50px;">
+                    <md-button class="md-raised md-mini" ng-disabled="btnDisabled" ng-click="toReceiveDetail(w)">
+                        <md-icon md-font-icon="zmdi zmdi-arrow-split"></md-icon>
+                        <md-tooltip>查看试剂的轨迹</md-tooltip>
+                    </md-button>
+                </div>
+            </div>
+            <div ng-if="ftype==1">
+                <table ng-table="receiveTableParams" class="table table-striped">
+                    <tr ng-repeat="w in receiveData">
+                        <td title="'#'">{{ $index + 1 }}</td>
+                        <td title="'试剂'" ng-bind-html="w.reagent | warn_chem_manager "></td>
+                        <td title="'课题名称'">{{w.applyReceive.issuesName}}</td>
+                        <td title="'用途'">{{w.applyReceive.purpose == 1? '教学': w.purpose == 2 ? '科研' : ''}}</td>
+                        <td title="'姓名'">{{w.member.realName}}</td>
+                        <td title="'院系班级'">{{w.member.groups | warn_member_group }}</td>
+                        <td title="'手机号'">{{w.member.mobile}}</td>
+                        <td title="'申请时间'">{{w.applyReceive.createAt | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                        <td title="'领用时间'">{{w.applyReceive.appointAt | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+                        <td title="'审核状态'">{{w.applyReceive.receiveSta == 1 ? '审核中' : w.applyReceive.receiveSta == 2 ? '待领用' : w.applyReceive.receiveSta == 3 ?
+                            '已领完' : w.applyReceive.receiveSta == 4 ? '已驳回' : '已逾期' }}
+                        </td>
+                        <td style="padding:3px">
+                            <md-button class="md-fab app-detail md-mini" ng-click="toReceiveDetail(w)">
+                                <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                                <md-tooltip>查看轨迹</md-tooltip>
+                            </md-button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div ng-if="ftype==2" ng-show="recoveryShowTable">
+                <table ng-table="recoveryTableParams" class="table table-striped">
+                    <tr ng-repeat="recycle in $data">
+                        <td title="'序号'">{{ $index + 1 }}</td>
+                        <td title="'试剂'" class="col-md-6" ng-bind-html="recycle | format_recycle"></td>
+                        <td title="'二维码'">{{recycle.rfFcode}}</td>
+                        <td title="'学生姓名'">{{recycle.memberName}}</td>
+                        <td title="'院系班级'">暂无字段</td>
+                        <td title="'发起时间'">{{recycle.createAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                        <td title="'回收时间'">{{recycle.recycleAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                        <td title="'状态'">{{recycle.status == 1 ? '未领用' : recycle.status == 2 ? '已领用' : recycle.status ==
+                            3 ? '待回收' : recycle.status == 4 ? '已回收' : recycle.status == 5 ?
+                            '异常（回收但未扫码）' : recycle.status == 6 ? '异常（扫码但未回收）' : '未知状态'}}
+                        </td>
+                        <td style="padding:3px">
+                            <md-button class="md-fab app-detail md-mini" ng-click="toReceiveDetail(w)">
+                                <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                                <md-tooltip>查看轨迹</md-tooltip>
+                            </md-button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div ng-if="ftype==3">
+                <table ng-table="checkTableParams" class="table table-striped">
+                    <tr ng-repeat="check in $data">
+                        <td title="'#'">{{ $index + 1 }}</td>
+                        <td title="'试剂名称'">{{check.chemName}}</td>
+                        <td title="'CAS'">{{check.cas}}</td>
+                        <td title="'纯度'">{{check.specName}}</td>
+                        <td title="'容量'">{{check.capacity}}</td>
+                        <td title="'盘点数量'">{{check.ckNum}}</td>
+                        <td title="'库存数量'">{{check.recordNum}}</td>
+                        <td title="'差异数'">{{check.difference}}</td>
+                        <td style="padding:3px">
+                            <md-button class="md-fab app-detail md-mini" ng-click="toCheckDetail(check)">
+                                <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                                <md-tooltip>查看</md-tooltip>
+                            </md-button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div ng-if="ftype==4">
+                <table ng-table="reagentUsedTableParams" class="table table-striped">
+                    <tr>
+                        <td title="'试剂名称'">{{reagentUsed.chemName}}</td>
+                        <td title="'CAS'">{{reagentUsed.cas}}</td>
+                        <td title="'人员名称'">{{reagentUsed.memberName}}</td>
+                        <td title="'院系班级'">{{reagentUsed.className}}</td>
+                        <td title="'手机号'">{{reagentUsed.phone}}</td>
+                        <td title="'申领容量'">{{reagentUsed.apply}}</td>
+                        <td title="'实际用量'">{{reagentUsed.used}}</td>
+                        <td style="padding:3px">
+                            <md-button class="md-fab app-detail md-mini" ng-click="toReceiveDetail()">
+                                <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                                <md-tooltip>查看轨迹</md-tooltip>
+                            </md-button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div ng-if="ftype==5">
+                <table ng-table="mixChemTableParams" class="table table-striped">
+                    <tr ng-repeat="ch in $data">
+                        <td title="'#'">{{ $index + 1 }}</td>
+                        <td title="'试剂名称'">{{ch.chem.fname}}</td>
+                        <td title="'CAS'">{{ch.chem.cas}}</td>
+                        <td title="'姓名'">{{ch.inChargeMember.realName}}</td>
+                        <td title="'院系班级'">{{check.specName}}</td>
+                        <td title="'手机号'">{{ch.inChargeMember.mobile}}</td>
+                        <td title="'存放时间'">{{}}</td>
+                        <td title="'存放地点'">{{ch | get_address}}</td>
+                        <td style="padding:3px">
+                            <md-button class="md-fab app-detail md-mini" ng-click="toReceiveDetail(ch)">
+                                <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                                <md-tooltip>查看</md-tooltip>
+                            </md-button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div ng-if="ftype==6">
+                <table ng-table="environTableParams" class="table table-striped">
+                    <tr>
+                        <td title="'地点'">{{environ.labName}}</td>
+                        <td title="'温度'" ng-if="environ.type == 1">{{environ.warnValue}}</td>
+                        <td title="'温度设定值'"  ng-if="environ.type == 1">{{environ.warnInterval}}</td>
+                        <td title="'湿度'"  ng-if="environ.type == 2">{{environ.warnValue}}</td>
+                        <td title="'湿度设定值'"  ng-if="environ.type == 2">{{environ.warnInterval}}</td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <div ng-show="showForm">
+                <ng-form name="warnForm">
+                    <div layout="row" style="width:60%;margin-left:50px;">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>关闭预警原因</label>
+                            <input type="text" name="closeNote" ng-model="closeNote" md-autofocus md-maxlength="50"
+                                   required>
+                            <div ng-messages="warnForm.closeNote.$error">
+                                <div ng-message="md-maxlength">关闭预警原因长度须小于50</div>
+                            </div>
+                        </md-input-container>
+                        <md-input-container layout-margin>
+                            <md-button class="md-raised md-mini" ng-disabled="btnDisabled" ng-click="closeWarn()">
+                                <md-icon md-font-icon="zmdi zmdi-alarm-off"></md-icon>
+                                <md-tooltip>关闭预警</md-tooltip>
+                            </md-button>
+                        </md-input-container>
+                    </div>
+                    <div layout="row" style="width:60%;margin-left:50px;">
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>搁置预警原因</label>
+                            <input type="text" name="delayNote" ng-model="delayNote" md-autofocus md-maxlength="50"
+                                   required>
+                            <div ng-messages="warnForm.delayNote.$error">
+                                <div ng-message="md-maxlength">搁置预警原因长度须小于50</div>
+                            </div>
+                        </md-input-container>
+                        <md-input-container class="md-block" style="width:120px;">
+                            <label>搁置时长/小时</label>
+                            <input type="number" ng-model="shelveTime" min="1" md-autofocus/>
+                        </md-input-container>
+                        <md-input-container layout-margin>
+                            <md-button class="md-raised md-mini" ng-disabled="btnDisabled" ng-click="delayWarn()">
+                                <md-icon md-font-icon="zmdi zmdi-alarm"></md-icon>
+                                <md-tooltip>搁置</md-tooltip>
+                            </md-button>
+                        </md-input-container>
+                    </div>
+                </ng-form>
+            </div>
+            <br/>
+            <br/>
+        </md-card-content>
+    </md-card>
+</md-content>
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right"
+            md-disable-backdrop>
+    <md-content layout-padding>
+        <timeline>
+            <timeline-event ng-repeat="event in events" side="alternate">
+                <timeline-badge class="{{event.badgeClass}}">
+                    <i class="glyphicon {{event.badgeIconClass}}"></i>
+                </timeline-badge>
+                <timeline-panel class="{{event.badgeClass}}">
+                    <timeline-heading>
+                        <h4>{{event.title | date:'yyyy-MM-dd HH:mm:ss'}}</h4>
+                    </timeline-heading>
+                    <p>{{event.content}}</p>
+                </timeline-panel>
+            </timeline-event>
+        </timeline>
+        <div layout="row" layout-align="center">
+            <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                <md-tooltip>取消</md-tooltip>
+            </md-button>
+        </div>
+    </md-content>
+</md-sidenav>
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="check" md-disable-backdrop>
+    <md-content layout-padding>
+        <div>
+            <h3 >试剂详情</h3>
+        </div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>试剂名称</th>
+                <th>cas</th>
+                <th>规格</th>
+                <th>容量</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="chemRea in chemReagentList" >
+                <td>{{chemRea.chemReagentDTO.chem.fname}}</td>
+                <td>{{chemRea.chemReagentDTO.chem.cas}}</td>
+                <td>{{chemRea.chemReagentDTO.spec.fname}}</td>
+                <td>{{chemRea.chemReagentDTO.capacity}}{{chemRea.chemReagentDTO.unit.unit}}</td>
+                <td style="padding:3px">
+                    <md-button class="md-fab app-detail md-mini" ng-click="toCheckTraj(chemRea)">
+                        <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                        <md-tooltip>查看轨迹</md-tooltip>
+                    </md-button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div layout="row" layout-align="center">
+            <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="closeCheck()" >
+                <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                <md-tooltip>取消</md-tooltip>
+            </md-button>
+        </div>
+    </md-content>
+</md-sidenav>

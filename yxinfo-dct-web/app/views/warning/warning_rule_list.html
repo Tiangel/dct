@@ -1,0 +1,26 @@
+<md-dialog aria-label="modify_password" style="min-width: 700px;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h3>预警规则列表</h3>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="close()">
+                <md-icon class="zmdi zmdi-close" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <table ng-table="tableParams" class="table table-striped">
+            <tr ng-repeat="rule in $data">
+                <td title="'序号'">{{ $index + 1 }}</td>
+                <td title="'预警内容'"ng-bind-html="rule | rule_msg"></td>
+                <td width="80px" style="padding:3px">
+                    <md-button class="md-fab app-delete md-mini" id="delete{{rule.id}}"
+                               ng-click="delete(rule)">
+                        <md-icon md-font-icon="zmdi zmdi-delete"></md-icon>
+                        <md-tooltip>删除</md-tooltip>
+                    </md-button>
+                </td>
+            </tr>
+        </table>
+    </md-dialog-content>
+</md-dialog>

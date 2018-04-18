@@ -1,0 +1,231 @@
+<link rel="stylesheet" href="js/libs/ztree-v3/css/zTreeStyle/zTreeStyle.css" type="text/css"/>
+<style>
+    .ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
+</style>
+
+<md-content layout="row">
+
+    <md-content  flex-sm="50" flex-gt-sm="25" flex-lg="20" flex-gt-lg="20">
+        <md-card class="md-whiteframe-1dp">
+            <ul id="groupTree" class="ztree"></ul>
+        </md-card>
+
+        <md-card class="md-whiteframe-1dp">
+            <div tree-model></div>
+        </md-card>
+
+    </md-content>
+
+    <md-content  layout="column" layout-fill>
+        <md-card>
+                <md-card-header layout="row" layout-sm="column" layout-xs="column" hide-print>
+                        <md-input-container layout-margin>
+                            <md-button ng-click="toEditMember(-1);" class="md-fab md-mini app-add">
+                                <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                                <md-tooltip>新增</md-tooltip>
+                            </md-button>
+                        </md-input-container>
+                        <md-input-container class="md-block">
+                            <label>帐号</label>
+                            <input ng-model="loginName" type="text">
+                        </md-input-container>
+                        <md-input-container class="md-block">
+                            <label>真实姓名</label>
+                            <input ng-model="realName" type="text">
+                        </md-input-container>
+                        <md-input-container class="md-block">
+                            <label>手机号码</label>
+                            <input ng-model="mobile" type="text">
+                        </md-input-container>
+                        <div search-btn></div>
+                </md-card-header>
+
+                <md-card-content>
+
+                    <table ng-table="tableParams" class="table table-striped" flex-sm="row">
+                        <thead >
+                            <tr>
+                                <th>#</th>
+                                <th>人员编号</th>
+                                <th>帐号</th>
+                                <th>真实姓名</th>
+                                <th>手机号码</th>
+                                <th>创建时间</th>
+                                <th width="190" hide-print>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="w in $data">
+                            <td data-title="'序号'">{{$index+1}}</td>
+                            <td data-title="'人员编号'">{{w.fcode}}</td>
+                            <td data-title="'帐号'">{{w.loginName}}</td>
+                            <td data-title="'真实姓名'">{{w.realName}}</td>
+                            <td data-title="'手机号码'">{{w.mobile}}</td>
+                            <td data-title="'创建时间'">{{w.createAt | date : 'yyyy-MM-dd HH:mm:ss'}}</td>
+                            <td width="180px" style="padding:3px" hide-print>
+                                <md-button  class="md-fab app-detail md-mini" ng-click="detail(w.id);">
+                                    <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                                    <md-tooltip>查看</md-tooltip>
+                                </md-button>
+                                <md-button class="md-fab app-modify md-mini" ng-click="toEditMember(w.id);">
+                                    <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
+                                    <md-tooltip>更新</md-tooltip>
+                                </md-button>
+                                <md-button class="md-fab app-delete md-mini" id="#delete{{w.id}}"
+                                           ng-click="deleteMember(w.id);">
+                                    <md-icon md-font-icon="zmdi zmdi-delete"></md-icon>
+                                    <md-tooltip>删除</md-tooltip>
+                                </md-button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-card-content>
+            </md-card>
+    </md-content>
+</md-content>
+
+<!-- 成员详情 -->
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%" md-component-id="memberDetail" ng-cloak md-disable-backdrop md-whiteframe="4">
+    <md-toolbar class="md-theme-light">
+        <h1 class="md-toolbar-tools">成员详情</h1>
+    </md-toolbar>
+    <md-content layout-padding ng-if="detailMember != null">
+        <md-chips ng-model="detailMemberGroupNames" readonly="true">
+            <md-chip-template>
+                <strong>{{$chip.fname}}</strong>
+            </md-chip-template>
+        </md-chips>
+        <md-input-container class="md-block">
+            <label>登录名</label>
+            <input md-no-asterisk value="{{detailMember.loginName}}" readonly>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label>真实姓名</label>
+            <input md-no-asterisk value="{{detailMember.realName}}" readonly>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label>人员编号</label>
+            <input md-no-asterisk value="{{detailMember.fcode}}" readonly>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label>昵称</label>
+            <input md-no-asterisk value="{{detailMember.nickName}}" readonly>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label>手机号码</label>
+            <input md-no-asterisk value="{{detailMember.mobile}}" readonly>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label>创建时间</label>
+            <input md-no-asterisk value="{{detailMember.createAt | date : 'yyyy-MM-dd HH:mm:ss'}}" readonly>
+        </md-input-container>
+        <md-input-container class="md-block">
+            <label>是否被删除</label>
+            <input md-no-asterisk value="{{detailMember.isDel == 1 ? '是' : '否'}}" readonly>
+        </md-input-container>
+        <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="closeSidenav('memberDetail');" >
+            <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+            <md-tooltip>取消</md-tooltip>
+        </md-button>
+    </md-content>
+</md-sidenav>
+
+<!-- 编辑成员 -->
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%" md-component-id="editMember" ng-cloak md-disable-backdrop md-whiteframe="4">
+    <md-toolbar class="md-theme-light">
+        <h1 class="md-toolbar-tools">{{editTitle}}</h1>
+    </md-toolbar>
+    <md-content layout-padding>
+        <form name="memberForm" ng-submit="saveMember()" novalidate="novalidate">
+            <label>成员组</label>
+            <md-chips ng-model="memberGroupNames" id="memberGroupNames" ng-click="changePNode($event, 'member')">
+                <md-chip-template>
+                    <strong>{{$chip.fname}}</strong>
+                </md-chip-template>
+            </md-chips>
+            <md-input-container class="md-block">
+                <label>登录名</label>
+                <input required md-no-asterisk name="loginName" ng-model="member.loginName">
+                <div ng-messages="memberForm.loginName.$error">
+                    <div ng-message="required">登录名不能为空！</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block" ng-if="member.id <= 0">
+                <label>登录密码</label>
+                <input required md-no-asterisk type="password" name="pwd" ng-model="member.pwd">
+                <div ng-messages="memberForm.pwd.$error">
+                    <div ng-message="required">登录密码不能为空！</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>人员编号</label>
+                <input required md-no-asterisk name="fcode" ng-model="member.fcode">
+                <div ng-messages="memberForm.fcode.$error">
+                    <div ng-message="required">人员编号不能为空！</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>真实姓名</label>
+                <input required md-no-asterisk name="realName" ng-model="member.realName">
+                <div ng-messages="memberForm.realName.$error">
+                    <div ng-message="required">真实姓名不能为空！</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>昵称</label>
+                <input md-no-asterisk name="nickName" ng-model="member.nickName">
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>手机号码</label>
+                <input required md-no-asterisk name="mobile" ng-model="member.mobile" ng-pattern="/^1[3|4|5|7|8]\d{9}$/">
+                <div ng-messages="memberForm.mobile.$error">
+                    <div ng-message="required">手机号码不能为空！</div>
+                    <div ng-message="pattern">手机号码不正确！</div>
+                </div>
+            </md-input-container>
+            <md-button class="md-fab app-detail md-mini" aria-label="保存" class="md-primary" type="submit">
+                <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                <md-tooltip>保存</md-tooltip>
+            </md-button>
+            <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="closeSidenav('editMember');" >
+                <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                <md-tooltip>取消</md-tooltip>
+            </md-button>
+        </form>
+    </md-content>
+</md-sidenav>
+
+<!-- 编辑成员组 -->
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%" md-component-id="editGroup" ng-cloak md-disable-backdrop md-whiteframe="4">
+    <div layout="column" ng-cloak>
+        <md-toolbar class="md-theme-light">
+            <h1 class="md-toolbar-tools">{{editGroupTitle}}</h1>
+        </md-toolbar>
+        <md-content layout-padding>
+            <form name="groupForm" ng-submit="saveGroup()" novalidate="novalidate">
+                <md-input-container class="md-block">
+                    <label>名称</label>
+                    <input required md-no-asterisk name="fname" ng-model="group.fname">
+                    <div ng-messages="groupForm.fname.$error">
+                        <div ng-message="required">名称不能为空！</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block" ng-hide="group.id < 0">
+                    <label>父成员组</label>
+                    <input readonly ng-model="group.parentName" id="updatePGroup" ng-click="changePNode($event, 'editGroup');"/>
+                </md-input-container>
+                <md-button class="md-fab app-detail md-mini" aria-label="保存" class="md-primary" type="submit">
+                    <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                    <md-tooltip>保存</md-tooltip>
+                </md-button>
+                <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="closeSidenav('editGroup');" >
+                    <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                    <md-tooltip>取消</md-tooltip>
+                </md-button>
+            </form>
+        </md-content>
+    </div>
+</md-sidenav>
+
+

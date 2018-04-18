@@ -1,0 +1,23 @@
+<md-dialog aria-label="choose_org">
+
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>选择组织</h2>
+        </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+
+        <md-list flex>
+
+            <md-list-item class="md-3-line" ng-repeat="item in items" ng-click="choose(item)">
+                <div class="md-list-item-text" layout="column">
+                    <h3>{{item.fname}}</h3>
+                </div>
+            </md-list-item>
+
+        </md-list>
+
+    </md-dialog-content>
+
+</md-dialog>

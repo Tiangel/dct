@@ -1,0 +1,174 @@
+<div>
+    <md-content style="background: transparent">
+        <md-card flex="100" layout="column">
+            <md-card-header layout="column">
+                <div layout="row">
+                    <md-input-container layout-margin>
+                        <md-button ng-click="exportAReceive()" class="md-fab md-mini app-add">
+                            <md-icon md-font-icon="zmdi zmdi-download"></md-icon>
+                            <md-tooltip>导出申领记录</md-tooltip>
+                        </md-button>
+                    </md-input-container>
+                    <div chem-autocomplete></div>
+                    <div topic-log-autocomplete></div>
+                    <div member-autocomplete></div>
+                    <!--<md-input-container class="md-block">-->
+                        <!--<label>学号</label>-->
+                        <!--<input ng-model="fcode" type="text">-->
+                    <!--</md-input-container>-->
+                    <!--<md-input-container class="md-block">-->
+                        <!--<label>院系班级</label>-->
+                        <!--<input ng-model="gfname" type="text">-->
+                    <!--</md-input-container>-->
+                    <!--<md-input-container class="md-block">-->
+                        <!--<label>手机号</label>-->
+                        <!--<input ng-model="mobile" type="text">-->
+                    <!--</md-input-container>-->
+                    <md-input-container style="width: 150px">
+                        <label>用途</label>
+                        <md-select ng-model="purposename" >
+                            <md-option ng-repeat="pur in purposelist" ng-value="{{pur.purpose}}">{{pur.name}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container style="width: 150px">
+                        <label>审核状态</label>
+                        <md-select ng-model="statusname" >
+                            <md-option ng-repeat="sta in statuslist" ng-value="{{sta.status}}">{{sta.name}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <div search-btn></div>
+                </div>
+            </md-card-header>
+
+            <md-card-content>
+
+                <table ng-table="tableParams" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>试剂名称</th>
+                        <th>课题名称</th>
+                        <th>用途</th>
+                        <th>姓名</th>
+                        <!--<th>学号</th>-->
+                        <th>院系班级</th>
+                        <th>手机号</th>
+                        <th>申请时间</th>
+                        <th>审核时间</th>
+                        <th>审核状态</th>
+                        <th width="80">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="w in $data" demo-tracked-table-row="row" ng-form="rowForm" >
+                        <td>{{$index + 1}}</td>
+                        <td ng-bind-html="w.applyReagentList | chem_manager "></td>
+                        <td>{{w.issuesName}}</td>
+                        <td>{{w.purpose==1?'教学':'科研'}}</td>
+                        <td>{{w.member.realName}}</td>
+                        <!--<td>{{w.member.fcode}}</td>-->
+                        <td>暂无数据</td>
+                        <td>{{w.member.mobile}}</td>
+                        <td>{{w.createAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                        <td>暂无数据</td>
+                        <td>{{w.receiveSta == 1 ? '审核中' : w.receiveSta == 2 ? '待领用' : w.receiveSta == 3 ? '已领完' : w.receiveSta == 4 ? '已驳回' : '已逾期' }}</td>
+                        <td style="padding:3px">
+                            <md-button class="md-fab app-detail md-mini" ng-click="toCheck(w)">
+                                <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                                <md-tooltip>查看</md-tooltip>
+                            </md-button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </md-card-content>
+        </md-card>
+    </md-content>
+    <md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right" md-disable-backdrop>
+        <md-content layout-padding>
+            <ng-form name="labForm">
+                <div layout="row">
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >课题名称</label>
+                        <input ng-model="list.issuesName" ng-disabled="btnDisabled">
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label >用途</label>
+                        <md-select ng-model="purposenameSelected" ng-disabled="btnDisabled">
+                            <md-option ng-repeat="pu in purposelist" ng-selected="list.purpose==pu.purpose" ng-value="{{pu.purpose}}">{{pu.name}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >姓名</label>
+                        <input ng-model="list.member.realName" ng-disabled="btnDisabled">
+                    </md-input-container>
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >学号</label>
+                        <input ng-model="list.member.fcode" ng-disabled="btnDisabled">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >院系班级</label>
+                        <input ng-model="list.member.groups.fname" ng-disabled="btnDisabled">
+                    </md-input-container>
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >手机号</label>
+                        <input ng-model="list.member.mobile" ng-disabled="btnDisabled">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label >状态</label>
+                        <md-select ng-model="statusSelected" ng-disabled="btnDisabled">
+                            <md-option ng-repeat="st in statuslist" ng-selected="list.receiveSta==st.status" ng-value="{{st.status}}">{{st.name}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>申请时间</label>
+                        <md-datepicker ng-model="list.createAt" md-min-date="minStartDate" md-open-on-focus ng-disabled="btnDisabled"></md-datepicker>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>审核时间</label>
+                        <md-datepicker ng-model="appointAtFrom" md-min-date="minStartDate" md-open-on-focus ng-disabled="btnDisabled"></md-datepicker>
+                    </md-input-container>
+                </div>
+            </ng-form>
+            <div>
+                <h2 >试剂详情</h2>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>试剂名称</th>
+                    <th>CAS号</th>
+                    <th>二维码</th>
+                    <th>纯度</th>
+                    <th>容量</th>
+                    <th>领用时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="a in chemList.applyReagentList" >
+                    <td>{{a.chem.fname}}</td>
+                    <td>{{a.chem.cas}}</td>
+                    <td>{{a.receive.reagent.rfFcode}}</td>
+                    <td>{{a.spec.fname}}</td>
+                    <td>{{a.capacity}}{{a.unit.unit}}</td>
+                    <td>{{a.receive.createAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div layout="row" layout-align="center">
+                <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()" >
+                    <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                    <md-tooltip>取消</md-tooltip>
+                </md-button>
+            </div>
+        </md-content>
+    </md-sidenav>
+</div>

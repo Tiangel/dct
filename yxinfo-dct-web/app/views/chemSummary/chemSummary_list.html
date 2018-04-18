@@ -1,0 +1,37 @@
+<div>
+    <md-content style="background: transparent">
+        <md-card flex="100" layout="column">
+            <md-card-header layout="column">
+                <div layout="row">
+                    <div chem-autocomplete></div>
+                    <div wh-autocomplete></div>
+                    <div search-btn></div>
+                </div>
+            </md-card-header>
+
+            <md-card-content>
+                <table ng-table="tableParams" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>仓库</th>
+                        <th>试剂</th>
+                        <th>余量</th>
+                        <th>数量</th>
+                        <!--<th width="80">操作</th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="w in $data" demo-tracked-table-row="row" ng-form="rowForm">
+                        <td>{{$index + 1}}</td>
+                        <td>{{w.wh.whName}}</td>
+                        <td ng-bind-html="w | chem_name "></td>
+                        <td>{{w.capacity}}{{w.unit.unit}}</td>
+                        <td>{{w.count}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </md-card-content>
+        </md-card>
+    </md-content>
+</div>

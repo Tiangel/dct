@@ -1,0 +1,91 @@
+<md-content style="background: transparent;">
+    <md-card flex="100" layout="column">
+        <md-card-header layout="column">
+            <search-button layout="row">
+                <md-input-container class="md-block">
+                    <label>预约项目名称</label>
+                    <input ng-model="proName">
+                </md-input-container>
+                <div search_btn></div>
+            </search-button>
+        </md-card-header>
+        <md-card-content>
+            <table ng-table="tableParams" class="table table-striped">
+                <tr ng-repeat="be in $data">
+                    <td title="'序号'">{{ $index + 1 }}</td>
+                    <td title="'预约项目名称'" class="col-md-6">{{be.proName}}</td>
+                    <td title="'编号'" class="col-md-6">{{be.fcode}}</td>
+                    <td title="'预约成员名称'">{{be.member.realName}}</td>
+                    <td title="'预约使用起始时间'" class="col-md-6">{{be.startTime | date:'yyyy-MM-dd HH:mm'}}</td>
+                    <td title="'预约使用结束时间'" class="col-md-6">{{be.endTime | date:'yyyy-MM-dd HH:mm'}}</td>
+                    <td title="'状态'" class="col-md-6">{{be.statusName}}</td>
+                    <td width="180px" style="padding:3px">
+                        <md-button class="md-fab app-detail md-mini" ng-click="toggleRightDetail(be)">
+                            <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                            <md-tooltip>查看</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+            </table>
+        </md-card-content>
+    </md-card>
+</md-content>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <form name="bespeakForm" ng-submit="save()" novalidate="novalidate">
+            <input type="text" ng-show="false" ng-model="device.id">
+            <md-input-container class="md-block">
+                <label>预约项目名称</label>
+                <input type="text" ng-model="bespeak.instBespeakDTO.proName" md-autofocus readonly="true">
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>编号</label>
+                <input type="text" ng-model="bespeak.instBespeakDTO.fcode" md-autofocus readonly="true">
+            </md-input-container>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>审核人</label>
+                    <input type="text" ng-model="bespeak.approveTeacher" md-autofocus readonly="true">
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>状态</label>
+                    <input type="text" ng-model="bespeak.instBespeakDTO.statusName" md-autofocus readonly="true">
+                </md-input-container>
+            </div>
+            <md-input-container class="md-block">
+                <label>审核意见</label>
+                <input type="text" ng-model="bespeak.opinion" md-autofocus readonly="true">
+            </md-input-container>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>预约成员名称</label>
+                    <input type="text" ng-model="bespeak.instBespeakDTO.member.realName" md-autofocus readonly="true">
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>预约成员电话</label>
+                    <input type="text" ng-model="bespeak.instBespeakDTO.member.mobile" md-autofocus readonly="true">
+                </md-input-container>
+            </div>
+            <div>
+                <h3>预约的仪器信息</h3>
+            </div>
+            <table ng-table="instrumentTable" class="table table-striped">
+                <tr ng-repeat="device in instrumentList">
+                    <td title="'仪器名称'" class="col-md-6">{{device.fname}}</td>
+                    <td title="'使用开始时间'" class="col-md-6">{{device.useStartTime | date:'yyyy-MM-dd HH:mm'}}</td>
+                    <td title="'使用结束时间'" class="col-md-6">{{device.useEndTime | date:'yyyy-MM-dd HH:mm'}}</td>
+                </tr>
+            </table>
+            <div layout="row" layout-align="center">
+                <md-input-container>
+                    <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                        <md-tooltip>取消</md-tooltip>
+                    </md-button>
+                </md-input-container>
+            </div>
+        </form>
+    </md-content>
+</md-sidenav>

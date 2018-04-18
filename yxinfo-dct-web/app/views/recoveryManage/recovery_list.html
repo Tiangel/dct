@@ -1,0 +1,120 @@
+<md-content style="background: transparent;">
+    <md-card flex="100" layout="column">
+
+        <md-card-header layout="column">
+            <search-button layout="row">
+                <div chem-autocomplete></div>
+                <md-input-container class="md-block">
+                    <label>二维码</label>
+                    <input ng-model="rfCode" type="text">
+                </md-input-container>
+                <div member-autocomplete></div>
+                <md-input-container style="width: 150px">
+                    <label>状态</label>
+                    <md-select ng-model="status">
+                        <md-option ng-repeat="st in statuslist" value="{{st.status}}">{{st.name}}</md-option>
+                    </md-select>
+                </md-input-container>
+                <div search_btn></div>
+            </search-button>
+        </md-card-header>
+        <md-card-content>
+            <table ng-table="tableParams" class="table table-striped">
+                <tr ng-repeat="recycle in $data">
+                    <td title="'序号'">{{ $index + 1 }}</td>
+                    <td title="'试剂'" class="col-md-6" ng-bind-html="recycle | format_recycle"></td>
+                    <td title="'二维码'">{{recycle.rfFcode}}</td>
+                    <td title="'学生姓名'">{{recycle.memberName}}</td>
+                    <td title="'院系班级'">暂无字段</td>
+                    <td title="'发起时间'">{{recycle.createAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                    <td title="'回收时间'">{{recycle.recycleAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                    <td title="'状态'">{{recycle.status == 1 ? '未领用' : recycle.status == 2 ? '已领用' : recycle.status == 3 ? '待回收' : recycle.status == 4 ? '已回收' : recycle.status == 5 ?
+                        '异常（回收但未扫码）' : recycle.status == 6 ? '异常（扫码但未回收）' : '未知状态'}}
+                    </td>
+                    <td width="80px" style="padding:3px">
+                        <md-button class="md-fab app-detail md-mini" ng-click="toggleRightDetail(recycle)">
+                            <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                            <md-tooltip>查看</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+            </table>
+        </md-card-content>
+    </md-card>
+</md-content>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <ng-form name="recycleForm">
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>试剂名称</label>
+                    <input name="chemName" ng-model="recycle.chemName" readonly="disabled">
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>CAS号</label>
+                    <input name="cas" ng-model="recycle.cas" readonly="disabled">
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>纯度</label>
+                    <input name="specName" ng-model="recycle.specName" readonly="disabled">
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>容量</label>
+                    <input name="capacity" ng-model="recycle.capacity" readonly="disabled">
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>学生姓名</label>
+                    <input name="memberName" ng-model="recycle.memberName" readonly="disabled">
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>学号</label>
+                    <input name="memberCode" ng-model="recycle.memberCode" readonly="disabled">
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>手机号</label>
+                    <input name="memberMobile" ng-model="recycle.memberMobile" readonly="disabled">
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>院系班级</label>
+                    <input name="chemName"  readonly="disabled">
+                </md-input-container>
+            </div>
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>二维码</label>
+                <input name="rfFcode" ng-model="recycle.rfFcode" readonly="disabled">
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>状态</label>
+                <md-select name="status" ng-model="recycle.status" ng-disabled="disabled">
+                    <md-option ng-repeat="st in statuslist" value="{{st.status}}">{{st.name}}</md-option>
+                </md-select>
+            </md-input-container>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>发起时间</label>
+                    <md-datepicker ng-model="recycle.createAt" name="createAt" readonly="disabled"></md-datepicker>
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>回收时间</label>
+                    <md-datepicker ng-model="recycle.recycleAt" name="recycleAt" readonly="disabled"></md-datepicker>
+                </md-input-container>
+            </div>
+        </ng-form>
+        <div layout="row" layout-align="center">
+            <md-input-container>
+                <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                    <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                    <md-tooltip>取消</md-tooltip>
+                </md-button>
+            </md-input-container>
+        </div>
+    </md-content>
+</md-sidenav>

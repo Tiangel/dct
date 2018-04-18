@@ -1,0 +1,143 @@
+<md-content style="background: transparent;">
+    <md-card flex="100" layout="column">
+        <md-card-header layout="column">
+            <search-button layout="row">
+                <md-input-container layout-margin>
+                    <md-button ng-click="toggleRightAdd()" class="md-fab md-mini app-add">
+                        <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                        <md-tooltip>新增化学品</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>化学品名称/cas码</label>
+                    <input ng-model="chemName">
+                </md-input-container>
+                <div search_btn></div>
+            </search-button>
+        </md-card-header>
+        <md-card-content>
+            <table ng-table="tableParams" class="table table-striped">
+                <tr ng-repeat="ch in $data">
+                    <td title="'序号'">{{ $index + 1 }}</td>
+                    <td title="'化学品名称'" class="col-md-6">{{ch.fname}}</td>
+                    <td title="'英文名'" class="col-md-6">{{ch.enName}}</td>
+                    <td title="'CAS码'" class="col-md-6">{{ch.cas}}</td>
+                    <td title="'分子式'" class="col-md-6">{{ch.molFormula}}</td>
+                    <td title="'分子量'" class="col-md-6">{{ch.molWeight}}</td>
+                    <td title="'类别'" ng-bind-html="ch.categories | chem_cate_list"></td>
+                    <td title="'废物类别'" ng-bind-html="ch.wasteCategories | chem_cate_list"></td>
+                    <td width="180px" style="padding:3px">
+                        <md-button class="md-fab app-detail md-mini" ng-click="toggleRightDetail(ch)">
+                            <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                            <md-tooltip>查看</md-tooltip>
+                        </md-button>
+                        <md-button class="md-fab app-modify md-mini" ng-click="toggleRightUpdate(ch)">
+                            <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
+                            <md-tooltip>更新</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+            </table>
+        </md-card-content>
+    </md-card>
+</md-content>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <form name="chemForm" ng-submit="save()" novalidate="novalidate">
+            <input type="text" ng-show="false" ng-model="chem.id">
+            <md-input-container class="md-block">
+                <label>化学品名称</label>
+                <input name="fname" ng-model="chem.fname" md-maxlength="50" required ng-disabled="readonlyFlag">
+                <div ng-messages="chemForm.fname.$error">
+                    <div ng-message="required">化学品名称不可为空</div>
+                    <div ng-message="md-maxlength">化学品名称长度须小于50</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>英文名</label>
+                <input type="text" name="enName" ng-model="chem.enName" md-maxlength="50" ng-disabled="readonlyFlag">
+                <div ng-messages="chemForm.enName.$error">
+                    <div ng-message="md-maxlength">英文名长度须小于50</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>CAS码</label>
+                <input type="text" name="cas" ng-model="chem.cas" md-maxlength="25" required ng-disabled="readonlyFlag">
+                <div ng-messages="chemForm.cas.$error">
+                    <div ng-message="required">CAS码不可为空</div>
+                    <div ng-message="md-maxlength">CAS码长度须小于25</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>有害物成分</label>
+                <input type="text" name="harm" ng-model="chem.harm" md-maxlength="100" ng-disabled="readonlyFlag">
+                <md-tooltip>{{chem.harm}}</md-tooltip>
+                <div ng-messages="chemForm.harm.$error">
+                    <div ng-message="md-maxlength">有害物成分的长度须小于100</div>
+                </div>
+            </md-input-container>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>分子式</label>
+                    <input type="text" name="molFormula" ng-model="chem.molFormula" md-maxlength="100" ng-disabled="readonlyFlag">
+                    <div ng-messages="chemForm.molFormula.$error">
+                        <div ng-message="md-maxlength">分子式的长度须小于100</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>分子量</label>
+                    <input type="text" name="molWeight" ng-model="chem.molWeight" md-maxlength="10" ng-disabled="readonlyFlag">
+                    <div ng-messages="chemForm.molWeight.$error">
+                        <div ng-message="md-maxlength">分子量的长度须小于10</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+            <md-input-container class="md-block">
+                <label>废弃物处理方法</label>
+                <input type="text" name="fcontent" ng-model="fcontent" ng-disabled="readonlyFlag"
+                       md-maxlength="500">
+                <md-tooltip>{{fcontent}}</md-tooltip>
+                <div ng-messages="chemForm.fcontent.$error">
+                    <div ng-message="md-maxlength">废弃物处理方法的长度须小于500</div>
+                </div>
+            </md-input-container>
+            <md-contact-chips
+                    ng-disabled="readonlyFlag"
+                    ng-model="categories"
+                    md-contacts="querySearch1($query)"
+                    md-contact-name="fname"
+                    md-contact-email="msg"
+                    md-highlight-flags="i"
+                    filter-selected="filterSelected"
+                    placeholder="类别">
+            </md-contact-chips>
+            <md-contact-chips
+                    ng-disabled="readonlyFlag"
+                    ng-model="wasteCategories"
+                    md-contacts="querySearch1($query)"
+                    md-contact-name="fname"
+                    md-contact-email="msg"
+                    md-highlight-flags="i"
+                    filter-selected="filterSelected"
+                    placeholder="废物类别">
+            </md-contact-chips>
+            <div layout="row" layout-align="center">
+                <md-input-container>
+                    <md-button type="submit" class="md-fab app-detail md-mini" ng-disabled="readonlyFlag" aria-label="保存">
+                        <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                        <md-tooltip>保存</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container>
+                    <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                        <md-tooltip>取消</md-tooltip>
+                    </md-button>
+                </md-input-container>
+            </div>
+        </form>
+    </md-content>
+</md-sidenav>

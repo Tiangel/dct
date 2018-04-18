@@ -1,0 +1,133 @@
+<md-content style="background: transparent;">
+    <md-card flex="100" layout="column">
+        <md-card-header layout="column">
+            <search-button layout="row">
+                <md-input-container layout-margin>
+                    <md-button ng-click="toggleRightAdd()" class="md-fab md-mini app-add">
+                        <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                        <md-tooltip>新增</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>监控地点</label>
+                    <input ng-model="address">
+                </md-input-container>
+                <div search_btn></div>
+            </search-button>
+        </md-card-header>
+        <md-card-content>
+            <table ng-table="tableParams" class="table table-striped">
+                <tr ng-repeat="mon in $data">
+                    <td title="'序号'" style="width: 100px;">{{ $index + 1 }}</td>
+                    <td title="'监控地点'" class="col-md-6"><a md-theme="blue" href="#/admin/vmon_monitor_list?placeId={{mon.id}}">{{mon.address}}</a></td>
+                    <td title="'对应地点'" class="col-md-6">{{mon.purposeNo == 1 ? mon.laboratoryDTO.labName : mon.whDTO.whName }}</td>
+                    <td width="280px" style="padding:3px">
+                        <md-button class="md-fab app-detail md-mini" ng-click="toggleRightDetail(mon)">
+                            <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                            <md-tooltip>查看</md-tooltip>
+                        </md-button>
+                        <md-button class="md-fab app-modify md-mini" ng-click="toggleRightUpdate(mon)">
+                            <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
+                            <md-tooltip>更新</md-tooltip>
+                        </md-button>
+                        <md-button class="md-fab app-delete md-mini" id="delete{{mon.id}}" ng-click="delete(mon)">
+                            <md-icon md-font-icon="zmdi zmdi-delete"></md-icon>
+                            <md-tooltip>删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+            </table>
+        </md-card-content>
+    </md-card>
+</md-content>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <form name="monForm" ng-submit="save()" novalidate="novalidate">
+            <input type="text" ng-show="false" ng-model="mon.id">
+            <md-input-container class="md-block">
+                <label>监控地点</label>
+                <input type="text" name="address" ng-model="mon.address" md-autofocus md-maxlength="100" required>
+                <div ng-messages="monForm.address.$error">
+                    <div ng-message="md-maxlength">监控地点长度须小于100</div>
+                </div>
+            </md-input-container>
+            <div ng-show="show">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>对应地点类型</label>
+                    <md-select ng-model="mon.purposeNo" ng-disabled="disabled">
+                        <md-option value="1">实验室</md-option>
+                        <md-option value="2">仓库</md-option>
+                        <md-option value="">无</md-option>
+                    </md-select>
+                </md-input-container>
+                <div ng-if=" mon.purposeNo == 1 " vmon-lab-autocomplete></div>
+                <div ng-if=" mon.purposeNo == 2 " vmon-wh-autocomplete></div>
+            </div>
+            <div layout="row" layout-align="center">
+                <md-input-container>
+                    <md-button type="submit" class="md-fab app-add md-mini" aria-label="保存">
+                        <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                        <md-tooltip>保存</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container>
+                    <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                        <md-tooltip>取消</md-tooltip>
+                    </md-button>
+                </md-input-container>
+            </div>
+        </form>
+    </md-content>
+</md-sidenav>
+
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="detail"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <form name="monForm" ng-submit="save()" novalidate="novalidate">
+            <input type="text" ng-show="false" ng-model="place.id">
+            <md-input-container class="md-block">
+                <label>监控地点</label>
+                <input type="text" name="address" ng-model="place.address" md-autofocus readonly="true">
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>对应地点类型</label>
+                <md-select ng-model="place.purposeNo" ng-disabled="disabled">
+                    <md-option value="1">实验室</md-option>
+                    <md-option value="2">仓库</md-option>
+                </md-select>
+            </md-input-container>
+            <div ng-if=" place.purposeNo == 1 " >
+                <md-input-container class="md-block">
+                    <label>实验室</label>
+                    <input type="text" name="labName" ng-model="place.laboratoryDTO.labName" md-autofocus readonly="true">
+                </md-input-container>
+            </div>
+            <div ng-if=" place.purposeNo == 2 " >
+                <md-input-container class="md-block">
+                    <label>仓库</label>
+                    <input type="text" name="labName" ng-model="place.whDTO.whName" md-autofocus readonly="true">
+                </md-input-container>
+            </div>
+            <h3>监控设备一览</h3>
+            <table class="table table-striped">
+                <tr ng-repeat="de in deviceList">
+                    <td title="'IP地址'" class="col-md-6">{{de.ip}}</td>
+                    <td title="'端口号'" class="col-md-6">{{de.port}}</td>
+                    <td title="'用户名'" class="col-md-6">{{de.username}}</td>
+                </tr>
+            </table>
+            <div layout="row" layout-align="center">
+                <md-input-container>
+                    <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="closeDetail()">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                        <md-tooltip>取消</md-tooltip>
+                    </md-button>
+                </md-input-container>
+            </div>
+        </form>
+    </md-content>
+</md-sidenav>

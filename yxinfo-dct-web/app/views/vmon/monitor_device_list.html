@@ -1,0 +1,141 @@
+<md-content style="background: transparent;">
+    <md-card flex="100" layout="column">
+        <md-card-header layout="column">
+            <search-button layout="row">
+                <md-input-container layout-margin>
+                    <md-button ng-click="toggleRightAdd()" class="md-fab md-mini app-add">
+                        <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                        <md-tooltip>新增</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>用户名</label>
+                    <input ng-model="username">
+                </md-input-container>
+                <md-autocomplete md-floating-label="地址"
+                                 md-selected-item="selectedAddr"
+                                 md-search-text-change="querySearchAddress(selectedText1)"
+                                 md-search-text="selectedText1"
+                                 md-items="addre in querySearchAddress(selectedText1)"
+                                 md-item-text="addre.address"
+                                 md-min-length="0">
+                    <md-item-template>
+                        <span md-highlight-text="selectedText" md-highlight-flags="^i">{{addre.address}}</span>
+                    </md-item-template>
+                    <md-not-found>
+                        未检索到"{{selectedText1}}".
+                    </md-not-found>
+                </md-autocomplete>
+                <md-input-container class="md-block">
+                    <label>ip地址</label>
+                    <input ng-model="ip">
+                </md-input-container>
+                <div search_btn></div>
+            </search-button>
+        </md-card-header>
+        <md-card-content>
+            <table ng-table="tableParams" class="table table-striped">
+                <tr ng-repeat="de in $data">
+                    <td title="'序号'" style="width: 100px;">{{ $index + 1 }}</td>
+                    <td title="'IP地址'" class="col-md-6">{{de.ip}}</td>
+                    <td title="'端口号'" class="col-md-6">{{de.port}}</td>
+                    <td title="'RTSP端口号'" class="col-md-6">{{de.rtspPort}}</td>
+                    <td title="'通道号'" class="col-md-6">{{de.channel}}</td>
+                    <td title="'用户名'" class="col-md-6">{{de.username}}</td>
+                    <td title="'供应商'" class="col-md-6">{{de.supplierId == 1? '海康' : de.supplierId == 2? '大华' : ''}}</td>
+                    <td title="'地址'" class="col-md-6">{{de.vmonPlaceDTO.address}}</td>
+                    <td width="180px" style="padding:3px">
+                        <md-button class="md-fab app-modify md-mini" ng-click="toggleRightUpdate(de)">
+                            <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
+                            <md-tooltip>更新</md-tooltip>
+                        </md-button>
+                        <md-button class="md-fab app-delete md-mini" id="delete{{de.id}}" ng-click="delete(de)">
+                            <md-icon md-font-icon="zmdi zmdi-delete"></md-icon>
+                            <md-tooltip>删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+            </table>
+        </md-card-content>
+    </md-card>
+</md-content>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <form name="deviceForm" ng-submit="save()" novalidate="novalidate">
+            <input type="text" ng-show="false" ng-model="device.id">
+            <md-input-container class="md-block">
+                <label>IP地址</label>
+                <input type="text" name="ip" ng-model="device.ip" md-autofocus md-maxlength="40" required>
+                <div ng-messages="deviceForm.ip.$error">
+                    <div ng-message="md-maxlength">IP地址长度须小于40</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>端口号</label>
+                <input type="text" name="port" ng-model="device.port" md-autofocus md-maxlength="10" required>
+                <div ng-messages="deviceForm.port.$error">
+                    <div ng-message="md-maxlength">端口号长度须小于10</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>RTSP端口号</label>
+                <input type="text" name="rtspPort" ng-model="device.rtspPort" required>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>通道号</label>
+                <input type="text" name="channel"  placeholder="例：23,24,25" ng-model="device.channel" required>
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>供应商</label>
+                <md-select name="supplierId" ng-model="device.supplierId">
+                    <md-option value="1">海康</md-option>
+                    <md-option value="2">大华</md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>用户名</label>
+                <input type="text" name="username" ng-model="device.username" md-autofocus md-maxlength="30" required>
+                <div ng-messages="deviceForm.username.$error">
+                    <div ng-message="md-maxlength">用户名长度须小于30</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>密码</label>
+                <input type="{{type ? 'text' : 'password'}}" name="pwd" ng-model="device.pwd" md-autofocus md-maxlength="20" required>
+                <div ng-messages="deviceForm.pwd.$error">
+                    <div ng-message="md-maxlength">密码长度须小于20</div>
+                </div>
+            </md-input-container>
+            <md-autocomplete md-floating-label="地址"
+                             md-selected-item="selectedAddress"
+                             md-search-text-change="querySearchAddress(selectedText)"
+                             md-search-text="selectedText"
+                             md-items="addr in querySearchAddress(selectedText)"
+                             md-item-text="addr.address"
+                             md-min-length="0">
+                <md-item-template>
+                    <span md-highlight-text="selectedText" md-highlight-flags="^i">{{addr.address}}</span>
+                </md-item-template>
+                <md-not-found>
+                    未检索到"{{selectedText}}".
+                </md-not-found>
+            </md-autocomplete>
+            <div layout="row" layout-align="center">
+                <md-input-container>
+                    <md-button type="submit" class="md-fab app-add md-mini" aria-label="保存">
+                        <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                        <md-tooltip>保存</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container>
+                    <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                        <md-tooltip>取消</md-tooltip>
+                    </md-button>
+                </md-input-container>
+            </div>
+        </form>
+    </md-content>
+</md-sidenav>

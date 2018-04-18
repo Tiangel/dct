@@ -1,0 +1,84 @@
+<div>
+    <md-content style="background: transparent">
+        <md-card flex="100" layout="column">
+            <md-card-header layout="column">
+                <div layout="row">
+                    <md-input-container layout-margin>
+                        <md-button ng-click="toadd()" class="md-fab md-mini app-add">
+                            <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                            <md-tooltip>新增项目</md-tooltip>
+                        </md-button>
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>项目名称</label>
+                        <input ng-model="fname" type="text">
+                    </md-input-container>
+                    <md-input-container style="width:150px;">
+                        <label>项目状态</label>
+                        <md-select ng-model="status">
+                            <md-option value="">不限</md-option>
+                            <md-option value="1">进行中</md-option>
+                            <md-option value="2">已结束</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <div search-btn></div>
+                </div>
+            </md-card-header>
+
+            <md-card-content>
+                <table ng-table="tableParams" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>项目名称</th>
+                        <th>项目状态</th>
+                        <th>创建时间</th>
+                        <th width="80">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="w in $data" demo-tracked-table-row="row" ng-form="rowForm">
+                        <td>{{$index + 1}}</td>
+                        <td>{{w.fname}}</td>
+                        <td>{{w.status == 1 ? '进行中' : w.status == 2 ? '已结束' : ''}}</td>
+                        <td>{{w.createAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                        <td width="180px" style="padding:3px">
+                            <md-button class="md-fab app-modify md-mini" ng-click="toUpdate(w)">
+                                <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
+                                <md-tooltip>更新</md-tooltip>
+                            </md-button>
+                            <md-button class="md-fab app-delete md-mini" id="delete{{w.id}}" ng-click="delete(w)">
+                                <md-icon md-font-icon="zmdi zmdi-delete"></md-icon>
+                                <md-tooltip>删除</md-tooltip>
+                            </md-button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </md-card-content>
+        </md-card>
+    </md-content>
+    <md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right" md-disable-backdrop>
+        <md-content layout-padding>
+            <ng-form name="labForm">
+                <div layout="row">
+                    <input type="text" ng-show="false" ng-model="list.id">
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >项目名称</label>
+                        <input ng-model="list.fname" ng-disabled="btnDisabled">
+                    </md-input-container>
+                </div>
+            </ng-form>
+            <div layout="row" layout-align="center">
+                <md-button class="md-fab app-detail md-mini" aria-label="保存" ng-click="addOrUpdate(list)" class="md-primary" ng-disabled="btnDisabled">
+                    <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                    <md-tooltip>保存</md-tooltip>
+                </md-button>
+                <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()" >
+                    <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                    <md-tooltip>取消</md-tooltip>
+                </md-button>
+            </div>
+        </md-content>
+    </md-sidenav>
+</div>

@@ -1,0 +1,30 @@
+<div class="login" flex layout="row" layout-fill layout-align="center center">
+
+    <md-content class="lc-block" >
+
+
+        <md-input-container class="md-icon-float md-block">
+
+            <md-icon class="zmdi zmdi-account"></md-icon>
+            <input ng-model="name" type="text" ng-keyup="enter($event)" placeholder="登录名" required>
+
+        </md-input-container>
+
+        <md-input-container class="md-block">
+            <md-icon class="zmdi zmdi-male" ></md-icon>
+            <input ng-model="password" type="password" ng-keyup="enter($event)" placeholder="登录密码" required>
+
+        </md-input-container>
+
+        <label>
+            <md-checkbox ng-model="save" aria-label="记住密码">记住密码</md-checkbox>
+        </label>
+
+        <md-button id="J_login" class="md-fab md-warn" aria-label="登录" ng-disabled="btnDisabled" ng-click="login()">
+            <md-icon md-font-icon="zmdi zmdi-arrow-forward"></md-icon>
+        </md-button>
+
+    </md-content>
+
+
+</div>

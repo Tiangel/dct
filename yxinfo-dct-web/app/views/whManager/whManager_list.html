@@ -1,0 +1,90 @@
+<md-content style="background: transparent;">
+    <md-card flex="100" layout="column">
+        <md-card-header layout="column">
+            <search-button layout="row">
+                <md-input-container layout-margin>
+                    <md-button ng-click="toggleRightAdd()" class="md-fab md-mini app-add">
+                        <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                        <md-tooltip>新增仓库</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-autocomplete md-floating-label="仓库"
+                                 md-selected-item="selectedWh"
+                                 md-no-cache="noCache"
+                                 md-search-text-change="querySearchWh(selectedText)"
+                                 md-search-text="selectedText"
+                                 md-items="w in querySearchWh(selectedText)"
+                                 md-item-text="w.whName"
+                                 md-min-length="0">
+                    <md-item-template>
+                        <span md-highlight-text="selectedText" md-highlight-flags="^i">{{w.whName}}</span>
+                    </md-item-template>
+                    <md-not-found>
+                        未检索到"{{selectedText}}".
+                    </md-not-found>
+                </md-autocomplete>
+                <div search_btn></div>
+            </search-button>
+        </md-card-header>
+        <md-card-content>
+            <table ng-table="tableParams" class="table table-striped">
+                <tr ng-repeat="wh in $data">
+                    <td title="'序号'">{{ $index + 1 }}</td>
+                    <td title="'仓库名称'" class="col-md-6">{{wh.whName}}</td>
+                    <td title="'仓库面积'">{{wh.area}}</td>
+                    <td title="'仓库位置'">{{wh.address}}</td>
+                    <td width="180px" style="padding:3px">
+                        <md-button class="md-fab app-delete md-mini" id="delete{{wh.whId}}" ng-click="delete(wh)">
+                            <md-icon md-font-icon="zmdi zmdi-delete"></md-icon>
+                            <md-tooltip>删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+            </table>
+        </md-card-content>
+    </md-card>
+</md-content>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <form name="whForm" ng-submit="save()" novalidate="novalidate">
+            <md-input-container class="md-block">
+                <label>仓库名称</label>
+                <input type="text" name="whName" ng-model="wh.whName" md-autofocus md-maxlength="50" required>
+                <div ng-messages="whForm.whName.$error">
+                    <div ng-message="required">仓库名称不可为空</div>
+                    <div ng-message="md-maxlength">仓库名称长度须小于50</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>仓库面积</label>
+                <input type="text" name="area" ng-model="wh.area" md-autofocus md-maxlength="25">
+                <div ng-messages="whForm.area.$error">
+                    <div ng-message="md-maxlength">仓库面积长度须小于25</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>仓库位置</label>
+                <input type="text" name="address" ng-model="wh.address" md-autofocus md-maxlength="50">
+                <div ng-messages="whForm.address.$error">
+                    <div ng-message="md-maxlength">仓库位置长度须小于50</div>
+                </div>
+            </md-input-container>
+            <div layout="row" layout-align="center">
+                <md-input-container>
+                    <md-button type="submit" class="md-fab app-add md-mini" aria-label="保存">
+                        <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                        <md-tooltip>保存</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container>
+                    <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                        <md-tooltip>取消</md-tooltip>
+                    </md-button>
+                </md-input-container>
+            </div>
+        </form>
+    </md-content>
+</md-sidenav>

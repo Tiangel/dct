@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>组织管理</title>
+</head>
+<body>
+
+<md-content layout="row">
+    <div flex layout="column">
+        <md-card>
+
+            <md-card-header layout="column" hide-print>
+                <div layout="row">
+                    <md-input-container layout-margin>
+                        <md-button class="md-fab md-mini app-add">
+                            <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                            <md-tooltip>新增</md-tooltip>
+                        </md-button>
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>名称</label>
+                        <input ng-model="fname" type="text">
+                    </md-input-container>
+                    <md-input-container layout-margin>
+                        <md-button ng-click="reflashHandler()" class="md-raised md-mini">搜索</md-button>
+                    </md-input-container>
+                </div>
+
+            </md-card-header>
+
+            <md-card-content>
+
+                <table ng-table="tableParams" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>编号</th>
+                        <th>隶属</th>
+                        <th>名称</th>
+                        <th>地址</th>
+                        <th>创建时间</th>
+                        <th width="190" hide-print>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="w in $data">
+                            <td>{{$index+1}}</td>
+                            <td>{{w.fcode}}</td>
+                            <td>{{w.pid}}</td>
+                            <td>{{w.fname}}</td>
+                            <td>{{w.address}}</td>
+                            <td>{{w.createAt | date : 'yyyy-MM-dd HH:mm:ss'}}</td>
+                            <td hide-print>
+                                <md-button class="md-fab app-detail md-mini">
+                                    <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                                    <md-tooltip>查看</md-tooltip>
+                                </md-button>
+                                <md-button class="md-fab app-modify md-mini">
+                                    <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
+                                    <md-tooltip>更新</md-tooltip>
+                                </md-button>
+                                <md-button class="md-fab app-delete md-mini">
+                                    <md-icon md-font-icon="zmdi zmdi-delete"></md-icon>
+                                    <md-tooltip>删除</md-tooltip>
+                                </md-button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </md-card-content>
+        </md-card>
+    </div>
+</md-content>
+
+</body>
+</html>

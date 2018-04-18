@@ -1,0 +1,206 @@
+<div>
+<md-content style="background: transparent">
+    <md-card flex="100" layout="column">
+        <md-card-header layout="column">
+            <div layout="row">
+                <md-input-container layout-margin>
+                    <md-button ng-click="exportReagent()" class="md-fab md-mini app-add">
+                        <md-icon md-font-icon="zmdi zmdi-download"></md-icon>
+                        <md-tooltip>导出试剂列表</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <div chem-autocomplete></div>
+                <div lab-autocomplete></div>
+                <div wh-autocomplete></div>
+                <md-input-container style="width: 150px">
+                    <label>状态</label>
+                    <md-select ng-model="statusname" >
+                        <md-option ng-repeat="st in statuslist" ng-value="{{st.status}}">{{st.name}}</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container class="md-block" >
+                    <label>入库时间起始</label>
+                    <md-datepicker ng-model="createAtFrom" md-min-date="minStartDate" md-open-on-focus></md-datepicker>
+                </md-input-container>
+                <md-input-container class="md-block" >
+                    <label>入库时间截止</label>
+                    <md-datepicker ng-model="createAtTo" md-min-date="minStartDate" md-open-on-focus></md-datepicker>
+                </md-input-container>
+                <div search-btn></div>
+            </div>
+        </md-card-header>
+
+        <md-card-content>
+
+            <table ng-table="tableParams" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>试剂名称</th>
+                    <th>二维码</th>
+                    <th>位置</th>
+                    <th>余量</th>
+                    <th>状态</th>
+                    <th width="80">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="w in $data" demo-tracked-table-row="row" ng-form="rowForm">
+                    <td>{{$index + 1}}</td>
+                    <td ng-bind-html="w | chem_name "></td>
+                    <td>{{w.rfFcode}}</td>
+                    <td>{{w.lab.labName}}{{w.wh.whName}}</td>
+                    <td>{{w.capacity-w.used}}{{w.unit.unit}}</td>
+                    <td>{{w.status == 1 ? '未领用' : w.status == 2 ? '已领用' : w.status == 3 ? '待回收' : w.status == 4 ? '已回收' : ''}}</td>
+                    <td style="padding:3px">
+                        <md-button class="md-fab app-detail md-mini" ng-click="toCheck(w)">
+                            <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                            <md-tooltip>查看</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </md-card-content>
+    </md-card>
+</md-content>
+    <md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right" md-disable-backdrop>
+        <md-content layout-padding>
+            <ng-form name="labForm">
+                <div layout="row">
+                    <!--<md-autocomplete md-floating-label="试剂名称"-->
+                                     <!--ng-disabled="btnDisabled"-->
+                                     <!--md-selected-item="list.chem"-->
+                                     <!--md-search-text-change="querySearchChem(searchText)"-->
+                                     <!--md-search-text="searchText"-->
+                                     <!--md-selected-item-change="querySearchChem(item)"-->
+                                     <!--md-items="item in querySearchChem(searchText)"-->
+                                     <!--md-item-text="item.fname"-->
+                                     <!--md-min-length="0" flex-gt-sm>-->
+                        <!--<md-item-template>-->
+                            <!--<span md-highlight-text="searchText" md-highlight-flags="^i">{{item.fname}}</span>-->
+                        <!--</md-item-template>-->
+                        <!--<md-not-found>-->
+                            <!--未检索到 "{{searchText}}"-->
+                        <!--</md-not-found>-->
+                    <!--</md-autocomplete>-->
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >试剂信息</label>
+                        <input ng-model="list.chem.fname" ng-disabled="btnDisabled">
+                    </md-input-container>
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >CAS号</label>
+                        <input ng-model="list.chem.cas" ng-disabled="btnDisabled">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >二维码</label>
+                        <input ng-model="list.rfFcode" ng-disabled="btnDisabled">
+                    </md-input-container>
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >纯度</label>
+                        <input ng-model="list.spec.fname" ng-disabled="btnDisabled">
+                    </md-input-container>
+                    <!--<md-input-container class="md-block" flex-gt-sm>-->
+                        <!--<label >纯度</label>-->
+                        <!--<md-select ng-model="specSelected" ng-disabled="btnDisabled">-->
+                            <!--<md-option ng-repeat="sp in speclist" ng-selected="list.spec.id==sp.id" ng-value="{{sp.id}}">{{sp.fname}}</md-option>-->
+                        <!--</md-select>-->
+                    <!--</md-input-container>-->
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >容量</label>
+                        <input ng-model="list.capacity" ng-disabled="btnDisabled">
+                    </md-input-container>
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >计量单位</label>
+                        <input ng-model="list.unit.unit" ng-disabled="btnDisabled">
+                    </md-input-container>
+                    <!--<md-input-container class="md-block" flex-gt-sm>-->
+                        <!--<label >计量单位</label>-->
+                        <!--<md-select ng-model="unitSelected" ng-disabled="btnDisabled">-->
+                            <!--<md-option ng-repeat="un in unitlist" ng-selected="list.unit.id==un.id"  ng-value="{{un.id}}">{{un.unit}}</md-option>-->
+                        <!--</md-select>-->
+                    <!--</md-input-container>-->
+                </div>
+                <div layout="row">
+                    <md-autocomplete md-floating-label="实验室"
+                                     ng-disabled="btnDisabled"
+                                     md-selected-item="list.lab"
+                                     md-search-text-change="querySearchLab(searchText)"
+                                     md-search-text="searchText"
+                                     md-selected-item-change="querySearchLab(l)"
+                                     md-items="l in querySearchLab(searchText)"
+                                     md-item-text="l.labName"
+                                     md-min-length="0" flex-gt-sm>
+                        <md-item-template>
+                            <span md-highlight-text="searchText" md-highlight-flags="^i">{{l.labName}}</span>
+                        </md-item-template>
+                        <md-not-found>
+                            未检索到 "{{searchText}}"
+                        </md-not-found>
+                    </md-autocomplete>
+                    <md-autocomplete md-floating-label="仓库"
+                                     ng-disabled="btnDisabled"
+                                     md-selected-item="list.wh"
+                                     md-search-text-change="querySearchWh(searchText)"
+                                     md-search-text="searchText"
+                                     md-selected-item-change="querySearchWh(h)"
+                                     md-items="h in querySearchWh(searchText)"
+                                     md-item-text="h.whName"
+                                     md-min-length="0" flex-gt-sm>
+                        <md-item-template>
+                            <span md-highlight-text="searchText" md-highlight-flags="^i">{{h.whName}}</span>
+                        </md-item-template>
+                        <md-not-found>
+                            未检索到 "{{searchText}}"
+                        </md-not-found>
+                    </md-autocomplete>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label >状态</label>
+                        <md-select ng-model="statusSelected" ng-disabled="true">
+                            <md-option ng-repeat="st in statuslist" ng-selected="list.status==st.status" ng-value="{{st.status}}">{{st.name}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+            </ng-form>
+            <div>
+                <h2 >试剂轨迹</h2>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>位置</th>
+                    <th>负责人</th>
+                    <th>负责人手机号</th>
+                    <th>发生时间</th>
+                    <th>余量</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="a in chemTrajList" >
+                    <td>{{a.fname}}</td>
+                    <td>{{a.inChargeMember.realName}}</td>
+                    <td>{{a.inChargeMember.mobile}}</td>
+                    <td>{{a.createAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                    <td>{{a.surplus}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div layout="row" layout-align="center">
+                <!--<md-button class="md-fab app-detail md-mini" aria-label="保存" ng-click="add(list)" class="md-primary" ng-disabled="btnDisabled">-->
+                    <!--<md-icon md-font-icon="zmdi zmdi-check"></md-icon>-->
+                    <!--<md-tooltip>保存</md-tooltip>-->
+                <!--</md-button>-->
+                <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()" >
+                    <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                    <md-tooltip>取消</md-tooltip>
+                </md-button>
+            </div>
+        </md-content>
+    </md-sidenav>
+</div>

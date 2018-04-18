@@ -1,0 +1,61 @@
+<md-dialog aria-label="modify_password">
+    <form name="memberForm">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>修改密码</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="closeDialog()">
+                    <md-icon class="zmdi zmdi-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+
+            <md-content class="lc-block" flex>
+
+                <md-input-container class="md-icon-float md-block">
+                    <md-icon class="zmdi zmdi-account"></md-icon>
+                    <input name="oldPassword" ng-model="oldPassword" type="password" placeholder="原密码" required
+                           md-no-asterisk>
+                    <div ng-messages="memberForm.oldPassword.$error">
+                        <div ng-message="required">原密码不能为空</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container class="md-icon-float md-block">
+                    <md-icon class="zmdi zmdi-account"></md-icon>
+                    <input name="newPassword" ng-model="newPassword" type="password" placeholder="新密码" required>
+                    <div ng-messages="memberForm.newPassword.$error">
+                        <div ng-message="required">新密码不能为空</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container class="md-icon-float md-block">
+                    <md-icon class="zmdi zmdi-account"></md-icon>
+                    <input name="confirmPassword" ng-model="confirmPassword" type="password" placeholder="确认新密码"
+                           required no-equal="newPassword">
+                    <div ng-messages="memberForm.confirmPassword.$error">
+                        <div ng-message="required">新密码不能为空</div>
+                        <div ng-message="noEqual">确认新密码不一致</div>
+                    </div>
+                </md-input-container>
+
+
+            </md-content>
+
+
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row" layout-align="center">
+            <md-button class="md-fab app-detail md-mini" aria-label="保存" ng-click="savePassword()" class="md-primary">
+                <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                <md-tooltip>保存</md-tooltip>
+            </md-button>
+            <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="closeDialog()">
+                <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                <md-tooltip>取消</md-tooltip>
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

@@ -1,0 +1,181 @@
+<div>
+    <md-content style="background: transparent">
+        <md-card flex="100" layout="column">
+            <md-card-header layout="column">
+                <div layout="row">
+                    <md-input-container layout-margin>
+                        <md-button ng-click="exportTopicLog()" class="md-fab md-mini app-add">
+                            <md-icon md-font-icon="zmdi zmdi-download"></md-icon>
+                            <md-tooltip>导出课题日志</md-tooltip>
+                        </md-button>
+                    </md-input-container>
+                    <div topic-log-autocomplete></div>
+                    <div member-autocomplete></div>
+                    <div lab-autocomplete></div>
+                    <md-input-container style="width: 150px">
+                        <label>用途</label>
+                        <md-select ng-model="purposename" >
+                            <md-option ng-repeat="pur in purposelist" ng-value="{{pur.purpose}}">{{pur.name}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>实验起始时间</label>
+                        <md-datepicker ng-model="exptAtBegin" md-min-date="minStartDate" md-open-on-focus ng-disabled="btnDisabled"></md-datepicker>
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>实验结束时间</label>
+                        <md-datepicker ng-model="exptAtEnd" md-min-date="minStartDate" md-open-on-focus ng-disabled="btnDisabled"></md-datepicker>
+                    </md-input-container>
+                    <div search-btn></div>
+                </div>
+            </md-card-header>
+
+            <md-card-content>
+                <table ng-table="tableParams" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>课题名称</th>
+                        <th>用途</th>
+                        <th>姓名</th>
+                        <th>实验室</th>
+                        <th>实验时间</th>
+                        <th>实验时长</th>
+                        <th>带教老师</th>
+                        <th width="80">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="w in $data" demo-tracked-table-row="row" ng-form="rowForm">
+                        <td>{{$index + 1}}</td>
+                        <td>{{w.issuesName}}</td>
+                        <td>{{w.purpose==1?'教学':'科研'}}</td>
+                        <td>{{w.memberDTO.realName}}</td>
+                        <td>{{w.labDto.labName}}</td>
+                        <td>{{w.exptAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                        <td>{{w.exptLength}}</td>
+                        <td>{{w.teacherDTO.realName}}</td>
+                        <td style="padding:3px">
+                            <md-button class="md-fab app-detail md-mini" ng-click="tocheck(w)">
+                                <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                                <md-tooltip>查看</md-tooltip>
+                            </md-button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </md-card-content>
+        </md-card>
+    </md-content>
+    <md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right" md-disable-backdrop>
+        <md-content layout-padding>
+            <ng-form name="labForm">
+                <div layout="row">
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >课题名称</label>
+                        <input ng-model="list.issuesName" ng-disabled="btnDisabled">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label >用途</label>
+                        <md-select ng-model="purposenameSelected" ng-disabled="btnDisabled">
+                            <md-option ng-repeat="pu in purposelist" ng-value="{{pu.purpose}}"
+                                       ng-selected="list.purpose==pu.purpose">{{pu.name}}</md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >姓名</label>
+                        <input ng-model="list.memberDTO.realName" ng-disabled="btnDisabled">
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label >学号</label>
+                        <input ng-model="list.memberDTO.fcode" ng-disabled="btnDisabled">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block"  flex-gt-sm>
+                        <label >手机号</label>
+                        <input ng-model="list.memberDTO.mobile" ng-disabled="btnDisabled">
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label >院系班级</label>
+                        <input ng-model="list.capacity" ng-disabled="btnDisabled">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                        <md-autocomplete ng-disabled="btnDisabled"
+                                         md-floating-label="实验室"
+                                         md-selected-item="list.labDto"
+                                         md-search-text-change="querySelect(selText)"
+                                         md-search-text="selText"
+                                         md-selected-item-change="querySelect(items)"
+                                         md-items="lab in querySelect(selText)"
+                                         md-item-text="lab.labName"
+                                         md-min-length="0" flex-gt-sm>
+                            <md-item-template>
+                                <span md-highlight-text="selText" md-highlight-flags="^i">{{lab.labName}}</span>
+                            </md-item-template>
+                            <md-not-found>
+                                "{{selectText}}" is not found.
+                            </md-not-found>
+                        </md-autocomplete>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>实验时间</label>
+                        <md-datepicker ng-model="list.exptAt" md-min-date="minStartDate" md-open-on-focus ng-disabled="btnDisabled"></md-datepicker>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>实验时长</label>
+                        <input ng-model="list.exptLength" ng-disabled="btnDisabled">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label >带教老师</label>
+                        <input ng-model="list.teacherDTO.realName" ng-disabled="btnDisabled">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label >备注</label>
+                        <input ng-model="list.context" ng-disabled="btnDisabled">
+                        <md-tooltip>{{list.context}}</md-tooltip>
+                    </md-input-container>
+                </div>
+            </ng-form>
+            <div>
+                <h3 >试剂详情</h3>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>试剂名称</th>
+                    <th>CAS号</th>
+                    <th>二维码</th>
+                    <th>纯度</th>
+                    <th>试剂用量</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="a in list.topicLogReagentList" >
+                    <td>{{a.chemReagentDTO.chem.fname}}</td>
+                    <td>{{a.chemReagentDTO.chem.cas}}</td>
+                    <td>{{a.chemReagentDTO.rfFcode}}</td>
+                    <td>{{a.chemReagentDTO.spec.fname}}</td>
+                    <td>{{a.used}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div layout="row" layout-align="center">
+                <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()" >
+                    <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                    <md-tooltip>取消</md-tooltip>
+                </md-button>
+            </div>
+        </md-content>
+    </md-sidenav>
+</div>

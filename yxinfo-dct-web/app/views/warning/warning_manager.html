@@ -1,0 +1,83 @@
+<md-card>
+    <md-content>
+        <md-tabs md-dynamic-height md-border-bottom md-selected="selectedIndex">
+            <md-tab label="{{warnInfo.name}}" ng-click="loadRecord(warnInfo.itemNo)" ng-repeat="warnInfo in warnList">
+                <md-content style="background: transparent;">
+                    <md-card-header layout="column" ng-if="receiveRuleFlag">
+                        <search-button layout="row">
+                            <md-input-container layout-margin>
+                                <md-button ng-click="addWarnRule()" class="md-fab md-mini app-add">
+                                    <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                                    <md-tooltip>新增预警规则</md-tooltip>
+                                </md-button>
+                            </md-input-container>
+                            <md-input-container layout-margin>
+                                <md-button ng-click="showWarnRule()" class="md-fab md-mini app-add">
+                                    <md-icon md-font-icon="zmdi zmdi-comment-text"></md-icon>
+                                    <md-tooltip>查看预警规则</md-tooltip>
+                                </md-button>
+                            </md-input-container>
+                        </search-button>
+                    </md-card-header>
+                    <md-card-header layout="column" ng-if="environRuleFlag">
+                        <search-button layout="row">
+                            <md-input-container layout-margin>
+                                <md-button ng-click="addWarnRuleForEnviron()" class="md-fab md-mini app-add">
+                                    <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                                    <md-tooltip>新增预警规则</md-tooltip>
+                                </md-button>
+                            </md-input-container>
+                            <md-input-container layout-margin>
+                                <md-button ng-click="showWarnRuleForEnviron()" class="md-fab md-mini app-add">
+                                    <md-icon md-font-icon="zmdi zmdi-comment-text"></md-icon>
+                                    <md-tooltip>查看预警规则</md-tooltip>
+                                </md-button>
+                            </md-input-container>
+                        </search-button>
+                    </md-card-header>
+                    <md-card-content>
+                        <md-card-header layout="column" ng-if="mixRuleFlag">
+                            <search-button layout="row">
+                                <md-input-container layout-margin>
+                                    <md-button ng-click="addWarnRuleForMix()" class="md-fab md-mini app-add">
+                                        <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                                        <md-tooltip>新增预警规则</md-tooltip>
+                                    </md-button>
+                                </md-input-container>
+                                <md-input-container layout-margin>
+                                    <md-button ng-click="showWarnRuleForMix()" class="md-fab md-mini app-add">
+                                        <md-icon md-font-icon="zmdi zmdi-comment-text"></md-icon>
+                                        <md-tooltip>查看预警规则</md-tooltip>
+                                    </md-button>
+                                </md-input-container>
+                            </search-button>
+                        </md-card-header>
+                        <table ng-table="tableParams{{warnInfo.itemNo}}" class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th style="width:50%">预警信息</th>
+                                <th>预警时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="a in $data">
+                                <td>{{$index + 1}}</td>
+                                <td>{{a.fcontext}}</td>
+                                <td>{{a.createAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                                <td style="padding:3px">
+                                    <md-button class="md-fab app-detail md-mini" ng-click="toDetail(a)">
+                                        <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                                        <md-tooltip>查看</md-tooltip>
+                                    </md-button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </md-card-content>
+                </md-content>
+            </md-tab>
+        </md-tabs>
+    </md-content>
+</md-card>

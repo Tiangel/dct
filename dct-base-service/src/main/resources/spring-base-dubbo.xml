@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="yxinfo-dct" version="1.0.0" />
+    <dubbo:registry address="zookeeper://192.168.0.200:2181" />
+    <dubbo:protocol name="dubbo" port="20879" />
+    <dubbo:annotation package="yxinfo.dct.service"/>
+
+</beans>

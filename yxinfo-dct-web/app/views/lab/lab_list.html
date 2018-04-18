@@ -1,0 +1,388 @@
+<md-content style="background: transparent;">
+    <md-card flex layout="column">
+        <md-card-header layout="column">
+            <search-button layout="row">
+                <md-input-container layout-margin>
+                    <md-button ng-click="toggleImport()" class="md-fab md-mini app-add">
+                        <md-icon md-font-icon="zmdi zmdi-upload"></md-icon>
+                        <md-tooltip>导入实验室</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container layout-margin>
+                    <md-button ng-click="exportLab()" class="md-fab md-mini app-add">
+                        <md-icon md-font-icon="zmdi zmdi-download"></md-icon>
+                        <md-tooltip>导出实验室</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container layout-margin>
+                    <md-button ng-click="toggleRightAdd()" class="md-fab md-mini app-add">
+                        <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                        <md-tooltip>新增实验室</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <div lab-autocomplete></div>
+                <md-autocomplete md-floating-label="技术人员/负责人/安全员"
+                                 md-selected-item="selectedMember"
+                                 md-search-text="searchText"
+                                 md-min-length="0"
+                                 md-selected-item-change="querySearchMember(item)"
+                                 md-search-text-change="querySearchMember(searchText)"
+                                 md-items="item in querySearchMember(searchText)"
+                                 md-item-text="item.realName">
+                    <span md-highlight-text="searchText">{{item.realName}}</span>
+                    <md-chip-template style="font-size:12px;">
+                        <span>{{$chip.realName}}</span>
+                    </md-chip-template>
+                    <md-not-found>
+                        未检索到"{{searchText}}".
+                    </md-not-found>
+                </md-autocomplete>
+                <md-input-container style="width:150px;">
+                    <label>实验室状态</label>
+                    <md-select ng-model="labStatus">
+                        <md-option value="">不限</md-option>
+                        <md-option value="o">开放</md-option>
+                        <md-option value="c">关闭</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container style="width:150px;">
+                    <label>实验室类型</label>
+                    <md-select ng-model="purpose">
+                        <md-option value="">不限</md-option>
+                        <md-option value="1">教学</md-option>
+                        <md-option value="2">科研</md-option>
+                    </md-select>
+                </md-input-container>
+                <div search_btn></div>
+            </search-button>
+        </md-card-header>
+        <md-card-content>
+            <table ng-table="tableParams" class="table table-striped">
+                <tr ng-repeat="labModel in $data">
+                    <td title="'序号'">{{ $index + 1 }}</td>
+                    <td title="'实验室名称'" class="col-md-6">{{labModel.labName}}
+                        <md-tooltip>{{labModel.labName}}</md-tooltip>
+                    </td>
+                    <td title="'实验室编号'">{{labModel.labCode}}
+                        <md-tooltip>{{labModel.labCode}}</md-tooltip>
+                    </td>
+                    <td title="'实验室类型'">{{labModel.purpose == 1 ? '教学' : labModel.purpose == 2 ? '科研' : '' }}</td>
+                    <td title="'实验室技术人员'" ng-bind-html="labModel.labTechMemberList | lab_manager : 1"></td>
+                    <td title="'技术人员电话'" ng-bind-html="labModel.labTechMemberList | lab_manager : 2"></td>
+                    <td title="'负责人'" ng-bind-html="labModel.labManaMemberList | lab_manager : 1"></td>
+                    <td title="'负责人电话'" ng-bind-html="labModel.labManaMemberList | lab_manager : 2"></td>
+                    <td title="'安全员'" ng-bind-html="labModel.labSafetyMemberList | lab_manager : 1"></td>
+                    <td title="'安全员电话'" ng-bind-html="labModel.labSafetyMemberList | lab_manager : 2"></td>
+                    <td title="'实验室状态'">{{labModel.labStatus == 'c' ? '关闭' : '开放' }}</td>
+                    <td width="180px" style="padding:3px">
+                        <md-button class="md-fab app-detail md-mini" ng-click="toggleRightDetail(labModel)">
+                            <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                            <md-tooltip>查看</md-tooltip>
+                        </md-button>
+                        <md-button class="md-fab app-modify md-mini" ng-click="toggleRightUpdate(labModel)">
+                            <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
+                            <md-tooltip>更新</md-tooltip>
+                        </md-button>
+                        <md-button class="md-fab app-delete md-mini" id="delete{{labModel.labId}}"
+                                   ng-click="delete(labModel)">
+                            <md-icon md-font-icon="zmdi zmdi-delete"></md-icon>
+                            <md-tooltip>删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+            </table>
+        </md-card-content>
+    </md-card>
+</md-content>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <form name="labForm" ng-submit="save()" novalidate="novalidate">
+            <input ng-model="lab.labManagerList" ng-show="false">
+            <input type="text" ng-show="false" ng-model="lab.labId">
+            <md-input-container class="md-block">
+                <label>实验室名称</label>
+                <input name="labName" ng-model="lab.labName" md-maxlength="50" required>
+                <div ng-messages="labForm.labName.$error">
+                    <div ng-message="required">实验室名称不可为空</div>
+                    <div ng-message="md-maxlength">实验室名称长度须小于50</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>实验室编号</label>
+                <input type="text" name="labCode" ng-model="lab.labCode" md-maxlength="50" required>
+                <div ng-messages="labForm.labCode.$error">
+                    <div ng-message="required">实验室编号不可为空</div>
+                    <div ng-message="md-maxlength">实验室编号长度须小于50</div>
+                </div>
+            </md-input-container>
+            <div layout="row">
+                <md-input-container class="md-block">
+                    <label>等级(A-H)</label>
+                    <input type="text" name="flevel" ng-model="lab.flevel" md-maxlength="1" ng-pattern= "/^[A-H]+$/">
+                    <div ng-messages="labForm.flevel.$error">
+                        <div ng-message="md-maxlength">等级格式不正确(A-H)</div>
+                        <div ng-message="pattern">等级格式不正确(A-H)！</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>楼宇及房间号</label>
+                    <input type="text" name="roomNum" ng-model="lab.roomNum" md-maxlength="50">
+                    <div ng-messages="labForm.roomNum.$error">
+                        <div ng-message="md-maxlength">楼宇及房间号长度须小于50</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>面积</label>
+                    <input type="text" name="area" ng-model="lab.area" md-maxlength="50">
+                    <div ng-messages="labForm.area.$error">
+                        <div ng-message="md-maxlength">面积的长度须小于50</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>位置</label>
+                    <input type="text" name="address" ng-model="lab.address" md-maxlength="50">
+                    <div ng-messages="labForm.address.$error">
+                        <div ng-message="md-maxlength">位置长度须小于50</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>实验室状态</label>
+                    <md-select name="labStatus" ng-model="lab.labStatus" required>
+                        <md-option value="o">开放</md-option>
+                        <md-option value="c">关闭</md-option>
+                    </md-select>
+                    <div ng-messages="labForm.labStatus.$error">
+                        <div ng-message="required">实验室状态不可为空</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>实验室类型</label>
+                    <md-select name="purpose" ng-model="lab.purpose" required>
+                        <md-option value="1">教学</md-option>
+                        <md-option value="2">科研</md-option>
+                    </md-select>
+                    <div ng-messages="labForm.purpose.$error">
+                        <div ng-message="required">实验室类型不可为空</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>开放时间</label>
+                    <md-datepicker ng-model="lab.openStartAt" name="openStartAt" md-min-date="minStartDate" md-open-on-focus></md-datepicker>
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>至</label>
+                    <md-datepicker ng-model="lab.openEndAt" name="openEndAt" md-min-date="minCloseDate" md-open-on-focus></md-datepicker>
+                </md-input-container>
+            </div>
+            <md-input-container class="md-block">
+                <label>危险源</label>
+                <input class="form-control" type="text" name="dangerSource" ng-model="lab.dangerSource"
+                       md-maxlength="120">
+                <md-tooltip>{{lab.dangerSource}}</md-tooltip>
+                <div ng-messages="labForm.dangerSource.$error">
+                    <div ng-message="md-maxlength">危险源长度须小于120</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>备注</label>
+                <input type="text" name="labRemark" ng-model="lab.labRemark" md-autofocus md-maxlength="120">
+                <md-tooltip>{{lab.labRemark}}</md-tooltip>
+                <div ng-messages="labForm.labRemark.$error">
+                    <div ng-message="md-maxlength">备注长度须小于120</div>
+                </div>
+            </md-input-container>
+            <md-chips class="labManaMember" ng-model="labManaMemberList" md-require-match="true">
+                <md-autocomplete
+                        md-no-cache="noCache"
+                        md-search-text="searchText"
+                        md-search-text-change="querySearchMember(searchText)"
+                        md-items="item in querySearchMember(searchText)"
+                        md-item-text="item.realName" placeholder="负责人" style="font-size: 80%">
+                    <span md-highlight-text="searchText">{{item.realName}}</span>
+                </md-autocomplete>
+                <md-chip-template style="font-size:12px;">
+                    <span>{{$chip.realName}}</span>
+                </md-chip-template>
+            </md-chips>
+            <md-chips class="labSafetyMember" ng-model="labSafetyMemberList" md-require-match="true"
+                      ng-disabled="disabled">
+                <md-autocomplete
+                        md-no-cache="noCache"
+                        md-search-text="searchText"
+                        md-search-text-change="querySearchMember(searchText)"
+                        md-items="item in querySearchMember(searchText)"
+                        md-item-text="item.realName" placeholder="安全员" style="font-size: 80%">
+                    <span md-highlight-text="searchText">{{item.realName}}</span>
+                </md-autocomplete>
+                <md-chip-template>
+                    <span style="font-size:12px;">{{$chip.realName}}</span>
+                </md-chip-template>
+            </md-chips>
+            <md-chips class="labTechMember" ng-model="labTechMemberList" md-require-match="true">
+                <md-autocomplete
+                        md-no-cache="noCache"
+                        md-search-text="searchText"
+                        md-search-text-change="querySearchMember(searchText)"
+                        md-items="item in querySearchMember(searchText)"
+                        md-item-text="item.realName" placeholder="实验室技术人员" style="font-size: 80%">
+                    <span md-highlight-text="searchText">{{item.realName}}</span>
+                </md-autocomplete>
+                <md-chip-template style="font-size:12px;">
+                    <span>{{$chip.realName}}</span>
+                </md-chip-template>
+            </md-chips>
+            <div layout="row" layout-align="center">
+                <md-input-container>
+                    <md-button type="submit" class="md-fab app-detail md-mini" aria-label="保存">
+                        <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                        <md-tooltip>保存</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container>
+                    <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                        <md-tooltip>取消</md-tooltip>
+                    </md-button>
+                </md-input-container>
+            </div>
+        </form>
+    </md-content>
+</md-sidenav>
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="import"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <h2>导入实验室</h2>
+        <a href="http://dct.oss-cn-hangzhou.aliyuncs.com/assets/%E5%AE%9E%E9%AA%8C%E5%AE%A4%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xls">下载模板</a>
+        <br/>
+        <ng-form name="importLab">
+            <input type="file" ngf-select ng-model="file" name="file" id="labLile" ngf-max-size="2MB" style="opacity:0"
+                   ngf-resize="{width: 100, height: 100}"/>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <input name="labName" ng-model="fileName">
+                </md-input-container>
+                <md-button class="md-fab app-detail md-mini" ng-click="openFileSelect()">
+                    <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                    <md-tooltip>浏览</md-tooltip>
+                </md-button>
+            </div>
+            <div layout="row" layout-align="center">
+                <md-input-container>
+                    <md-button ng-click="submit()" class="md-fab app-add md-mini">
+                        <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                        <md-tooltip>导入</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container>
+                    <md-button class="md-fab app-delete md-mini" ng-click="closeImport()">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                        <md-tooltip>取消</md-tooltip>
+                    </md-button>
+                </md-input-container>
+            </div>
+        </ng-form>
+    </md-content>
+</md-sidenav>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="detail"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <ng-form name="labForm2">
+            <input type="text" ng-show="false" ng-model="lab.labId">
+            <md-input-container class="md-block">
+                <label>实验室名称</label>
+                <input ng-model="lab.labName" readonly="disabled">
+            </md-input-container>
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>实验室编号</label>
+                <input type="text" ng-model="lab.labCode" readonly="disabled">
+            </md-input-container>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>实验室等级</label>
+                    <input type="text" ng-model="lab.flevel" readonly="disabled">
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>楼宇及房间号</label>
+                    <input type="text" ng-model="lab.roomNum" readonly="disabled">
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>面积</label>
+                    <input type="text" ng-model="lab.area" md-maxlength="50" readonly="disabled">
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>位置</label>
+                    <input type="text" ng-model="lab.address" readonly="disabled">
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>实验室状态</label>
+                    <md-select ng-model="lab.labStatus" ng-disabled="disabled">
+                        <md-option value="o">开放</md-option>
+                        <md-option value="c">关闭</md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>实验室类型</label>
+                    <md-select ng-model="lab.purpose" ng-disabled="disabled">
+                        <md-option value="1">教学</md-option>
+                        <md-option value="2">科研</md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>开放时间</label>
+                    <md-datepicker ng-model="lab.openStartAt" md-min-date="minStartDate"
+                                   md-open-on-focus ng-disabled="disabled"></md-datepicker>
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>至</label>
+                    <md-datepicker ng-model="lab.openEndAt" md-min-date="minCloseDate"
+                                   md-open-on-focus ng-disabled="disabled"></md-datepicker>
+                </md-input-container>
+            </div>
+            <md-input-container class="md-block">
+                <label>危险源</label>
+                <input class="form-control" type="text" ng-model="lab.dangerSource" readonly="disabled">
+                <md-tooltip>{{lab.dangerSource}}</md-tooltip>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>备注</label>
+                <input type="text" ng-model="lab.labRemark" md-autofocus readonly="disabled">
+                <md-tooltip>{{lab.labRemark}}</md-tooltip>
+            </md-input-container>
+            <div>
+                <h3>实验室管理人员信息</h3>
+            </div>
+            <table ng-table="memberTable" class="table table-striped">
+                <tr ng-repeat="member in memberList">
+                    <td title="'人员名称'" class="col-md-6">{{member.memberDTO.realName}}</td>
+                    <td title="'人员编号'">{{member.memberDTO.fcode}}</td>
+                    <td title="'联系电话'">{{member.memberDTO.mobile}}</td>
+                    <td title="'人员类型'">{{member.ftype == 1 ? '负责人' : member.ftype == 2 ? '安全员' : '技术人员'}}</td>
+                </tr>
+            </table>
+        </ng-form>
+        <div layout="row" layout-align="center">
+            <md-input-container>
+                <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                    <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                    <md-tooltip>取消</md-tooltip>
+                </md-button>
+            </md-input-container>
+        </div>
+    </md-content>
+</md-sidenav>

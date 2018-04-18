@@ -1,0 +1,100 @@
+<md-card>
+    <md-content>
+        <md-tabs md-theme="blue" md-dynamic-height md-border-bottom md-selected="selectedIndex">
+            <md-tab label="{{warnInfo.name}}" ng-click="loadWarnInfo(warnInfo.itemNo)"  ng-repeat="warnInfo in warnList">
+                <md-content class="md-padding">
+                    <table ng-table="tableParams{{warnInfo.itemNo}}" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>领用预警</th>
+                            <th>预警时间</th>
+                            <th>状态</th>
+                            <th>操作原因</th>
+                            <th>操作人员</th>
+                            <th>操作时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="a in $data">
+                            <td>{{$index + 1}}</td>
+                            <td>
+                                <a href="javascript:;" ng-click="toDetail(a)">{{a.fcontext}}</a>
+                            </td>
+                            <td>{{a.createAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                            <td>{{a.status ==1 ?'待处理':a.status == 2 ?'关闭':'搁置'}}</td>
+                            <td>{{a.warnRecordLogDTO.note}}</td>
+                            <td>{{a.warnRecordLogDTO.memberDTO.realName}}</td>
+                            <td>{{a.warnRecordLogDTO.createAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                            <td style="padding:3px">
+                                <md-button class="md-fab app-detail md-mini" ng-click="toCheck(a)">
+                                    <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                                    <md-tooltip>查看</md-tooltip>
+                                </md-button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-content>
+            </md-tab>
+        </md-tabs>
+    </md-content>
+
+    <md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right"
+                md-disable-backdrop>
+        <md-content layout-padding>
+            <ng-form name="labForm">
+                <div layout="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>预警信息</label>
+                        <input ng-model="list.fcontext" ng-disabled="btnDisabled">
+                    </md-input-container>
+                    <md-tooltip>{{list.fcontext}}</md-tooltip>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>预警时间</label>
+                        <input ng-model="list.createAt" date_format ng-disabled="btnDisabled">
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>状态</label>
+                        <md-select ng-model="list.status" ng-disabled="btnDisabled">
+                            <md-option value="2">关闭</md-option>
+                            <md-option value="3">搁置</md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+            </ng-form>
+            <div>
+                <h3>操作详情</h3>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>操作类型</th>
+                    <th>操作原因</th>
+                    <th>操作人员</th>
+                    <th>操作时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="w in operationList">
+                    <td>{{w.ftype == 2?'关闭':'搁置'}}</td>
+                    <td>{{w.note}}
+                        <md-tooltip>{{w.note}}</md-tooltip>
+                    </td>
+                    <td>{{w.memberDTO.realName}}</td>
+                    <td>{{w.createAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div layout="row" layout-align="center">
+                <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                    <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                    <md-tooltip>取消</md-tooltip>
+                </md-button>
+            </div>
+        </md-content>
+    </md-sidenav>
+</md-card>

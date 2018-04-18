@@ -1,0 +1,82 @@
+<md-sidenav class="main-sidenav md-sidenav-left md-whiteframe-z2" md-component-id="left-sidenav"  md-is-locked-open="leftNav" hide-print>
+
+    <div class="nav-header"><a ng-href="#/" class="logo"><img ng-src="{{logo}}"/></a></div>
+
+    <md-content flex role="navigation" ng-controller="navBarController">
+
+        <ul class="main-menu">
+            <li>
+                <md-button ui-sref-active="active" ui-sref="admin.home"><i class="zmdi zmdi-home"></i> 主页
+                </md-button>
+            </li>
+
+            <li ng-repeat="menu in menus" ng-class="{'sub-menu' : menu.childs}">
+
+                <md-button ui-sref-active="active" ng-href="{{menu.ref ? ('#/'+menu.ref) : ''}}"
+                           ng-class="{'active' : isActiveState(menu.ref)}" toggle_submenu>
+                    <i class="zmdi {{menu.icon}}"></i> {{menu.fname}}
+                </md-button>
+                <ul ng-if="menu.childs">
+                    <li ng-repeat="child in menu.childs">
+                        <md-button ui-sref-active="active" ng-href="{{child.ref ? ('#/'+child.ref) : ''}}"
+                                   ng-class="{'active' : isActiveState(child.ref)}">{{child.fname}}
+                        </md-button>
+                    </li>
+                </ul>
+            </li>
+
+        </ul>
+
+    </md-content>
+</md-sidenav>
+
+<div layout="column" role="main" flex>
+
+    <md-toolbar class="md-whiteframe-z1 header" ng-controller="topMenuController">
+        <div class="md-toolbar-tools docs-toolbar-tools" tabIndex="-1">
+            <h6  style="margin-left:10px;">您好！{{userName}},欢迎登陆{{orgName}}!</h6>
+            <ul class="clock_ul">
+                <li class="clock_li"><img class="img" src="images/icons/num.png"/></li>
+                <li class="clock_li"><img class="img" src="images/icons/num.png"/></li>
+                <li class="clock_li">:</li>
+                <li class="clock_li"><img class="img" src="images/icons/num.png"/></li>
+                <li class="clock_li"><img class="img" src="images/icons/num.png"/></li>
+                <li class="clock_li">:</li>
+                <li class="clock_li"><img class="img" src="images/icons/num.png"/></li>
+                <li class="clock_li"><img class="img" src="images/icons/num.png"/></li>
+            </ul>
+            <div flex></div>
+            <md-switch ng-model="leftNav" ng-click="leftToggle()" hide-print></md-switch>
+            <div class="pull-right">
+                <ul class="top-menu">
+                    <md-menu md-offset="50" md-position-mode="target-right target">
+                        <md-button class="md-icon-button" aria-label="More" ng-click="$mdOpenMenu($event)">
+                            <md-icon md-menu-origin md-svg-icon="images/icons/more_vert.svg"></md-icon>
+                        </md-button>
+                        <md-menu-content width="3">
+                            <md-menu-item>
+                                <md-button ng-click="modifyPassword($event)">
+                                    <md-icon class="zmdi zmdi-settings"></md-icon>
+                                    修改密码
+                                </md-button>
+                            </md-menu-item>
+                            <md-menu-item>
+                                <md-button ng-click="logout()">
+                                    <md-icon class="zmdi zmdi-power"></md-icon>
+                                    退出
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                </ul>
+            </div>
+        </div>
+    </md-toolbar>
+
+    <div layout="column" flex>
+        <md-content ui-view flex></md-content>
+        <div class="footer" ng-include="'views/admin/footer.html'"></div>
+    </div>
+
+</div>
+

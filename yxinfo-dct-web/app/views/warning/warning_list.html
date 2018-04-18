@@ -1,0 +1,84 @@
+<div ng-cloak>
+    <md-content>
+        <md-tabs md-dynamic-height md-border-bottom>
+            <md-tab label="领用预警">
+                <md-content class="md-padding">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>领用预警</th>
+                            <th>预警时间</th>
+                            <th>状态</th>
+                            <th>关闭原因</th>
+                            <th>操作人员</th>
+                            <th>操作时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>某某老师领用硫酸 分析纯500ml 数量3</td>
+                            <td>2016-7-14 20：54</td>
+                            <td>关闭</td>
+                            <td>已将数据验证过，没有问题</td>
+                            <td>张三三</td>
+                            <td>2016-7-15 20：54</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-content>
+            </md-tab>
+            <md-tab label="回收预警">
+                <md-content class="md-padding">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>领用预警</th>
+                            <th>预警时间</th>
+                            <th>状态</th>
+                            <th>关闭原因</th>
+                            <th>操作人员</th>
+                            <th>操作时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="a in list.topicLogReagentList" >
+                            <td></td>
+                            <td>{{a.chemReagentDTO.chem.cas}}</td>
+                            <td>{{a.chemReagentDTO.rfFcode}}</td>
+                            <td>{{a.chemReagentDTO.chem.cas}}</td>
+                            <td>{{a.chemReagentDTO.spec.fname}}</td>
+                            <td>{{a.used}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-content>
+            </md-tab>
+            <md-tab label="盘点预警">
+                <md-content class="md-padding">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>领用预警</th>
+                            <th>预警时间</th>
+                            <th>状态</th>
+                            <th>关闭原因</th>
+                            <th>操作人员</th>
+                            <th>操作时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="a in list.topicLogReagentList" >
+                            <td>{{a.chemReagentDTO.chem.fname}}</td>
+                            <td>{{a.chemReagentDTO.chem.cas}}</td>
+                            <td>{{a.chemReagentDTO.chem.cas}}</td>
+                            <td>{{a.chemReagentDTO.rfFcode}}</td>
+                            <td>{{a.chemReagentDTO.spec.fname}}</td>
+                            <td>{{a.used}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-content>
+            </md-tab>
+        </md-tabs>
+    </md-content>
+</div>

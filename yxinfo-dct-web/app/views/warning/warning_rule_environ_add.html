@@ -1,0 +1,54 @@
+<md-dialog aria-label="modify_password">
+    <form name="warnRuleForm" ng-submit="saveWarnRule()" novalidate="novalidate">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h3>新增预警规则</h3>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="close()">
+                    <md-icon class="zmdi zmdi-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <md-content class="lc-block">
+                <div layout="row" style="margin-top:20px;">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>最小温度</label>
+                        <input type="number" name="text" ng-model="environ.tempLeft" required>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>最高温度</label>
+                        <input type="number" name="text" ng-model="environ.tempRight" required min="{{environ.tempLeft}}">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>最小湿度</label>
+                        <input type="number" name="text" ng-model="environ.humLeft" required>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>最高湿度</label>
+                        <input type="number" name="text" ng-model="environ.humRight" required required min="{{environ.humLeft}}">
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <div lab-autocomplete flex-gt-sm></div>
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>缓存时间间隔</label>
+                        <input type="number" name="text" ng-model="environ.tempAndHumCacheInterval" required>
+                    </md-input-container>
+                </div>
+            </md-content>
+        </md-dialog-content>
+        <md-dialog-actions layout="row" layout-align="center">
+            <md-button class="md-fab app-detail md-mini" aria-label="保存" type="submit" class="md-primary">
+                <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                <md-tooltip>保存</md-tooltip>
+            </md-button>
+            <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                <md-tooltip>取消</md-tooltip>
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

@@ -1,0 +1,82 @@
+<md-content style="background: transparent;">
+    <md-card flex="100" layout="column">
+        <md-card-header layout="column">
+            <search-button layout="row">
+                <md-input-container layout-margin>
+                    <md-button ng-click="toggleRightAdd()" class="md-fab md-mini app-add">
+                        <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                        <md-tooltip>新增仪器</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>仪器名称</label>
+                    <input ng-model="fname">
+                </md-input-container>
+                <md-input-container style="width:150px;">
+                    <label>状态</label>
+                    <md-select ng-model="status">
+                        <md-option value="">不限</md-option>
+                        <md-option value="1">正常</md-option>
+                        <md-option value="2">损坏</md-option>
+                        <md-option value="3">废弃</md-option>
+                    </md-select>
+                </md-input-container>
+                <div search_btn></div>
+            </search-button>
+        </md-card-header>
+        <md-card-content>
+            <table ng-table="tableParams" class="table table-striped">
+                <tr ng-repeat="device in $data">
+                    <td title="'序号'">{{ $index + 1 }}</td>
+                    <td title="'仪器名称'" class="col-md-6">{{device.fname}}</td>
+                    <td title="'状态'">{{device.status == 1 ? '正常' : device.status == 2? '损坏' : device.status == 3? '废弃' : '' }}</td>
+                    <td title="'创建时间'">{{device.createAt | date:'yyyy-MM-dd HH:mm'}}</td>
+                    <td width="180px" style="padding:3px">
+                        <md-button class="md-fab app-modify md-mini" ng-click="toggleRightUpdate(device)">
+                            <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
+                            <md-tooltip>更新</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+            </table>
+        </md-card-content>
+    </md-card>
+</md-content>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="right"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <form name="deviceForm" ng-submit="save()" novalidate="novalidate">
+            <input type="text" ng-show="false" ng-model="device.id">
+            <md-input-container class="md-block">
+                <label>仪器名称</label>
+                <input type="text" name="fname" ng-model="device.fname" md-autofocus md-maxlength="100" required>
+                <div ng-messages="deviceForm.fname.$error">
+                    <div ng-message="md-maxlength">仪器名称长度须小于100</div>
+                </div>
+            </md-input-container>
+            <md-input-container class="md-block" ng-show="showStatus">
+                <label>状态</label>
+                <md-select name="status" ng-model="device.status">
+                    <md-option value="1">正常</md-option>
+                    <md-option value="2">损坏</md-option>
+                    <md-option value="3">废弃</md-option>
+                </md-select>
+            </md-input-container>
+            <div layout="row" layout-align="center">
+                <md-input-container>
+                    <md-button type="submit" class="md-fab app-add md-mini" aria-label="保存">
+                        <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                        <md-tooltip>保存</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container>
+                    <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                        <md-tooltip>取消</md-tooltip>
+                    </md-button>
+                </md-input-container>
+            </div>
+        </form>
+    </md-content>
+</md-sidenav>

@@ -1,0 +1,130 @@
+<md-content style="background: transparent;">
+    <md-card flex="100" layout="column">
+        <md-card-header layout="column">
+            <search-button layout="row">
+                <md-input-container layout-margin>
+                    <md-button ng-click="toEdit(-1)" class="md-fab md-mini app-add">
+                        <md-icon md-font-icon="zmdi zmdi-collection-add"></md-icon>
+                        <md-tooltip>新增公告</md-tooltip>
+                    </md-button>
+                </md-input-container>
+            </search-button>
+        </md-card-header>
+        <md-card-content>
+            <table ng-table="tableParams" class="table table-striped">
+                <tr ng-repeat="notice in $data">
+                    <td title="'序号'">{{ $index + 1 }}</td>
+                    <td title="'标题'" class="col-md-6">{{notice.title}}</td>
+                    <td title="'创建人'">{{notice.member.realName}}</td>
+                    <td title="'更新时间'">{{notice.createAt | date : 'yyyy-MM-dd HH:mm:ss'}}</td>
+                    <td title="'状态'">{{notice.isShow ? "已发布" : "未发布"}}</td>
+                    <td width="240px" style="padding:3px" hide-print>
+                        <md-button class="md-fab app-modify md-mini" id="show{{notice.id}}"
+                                   ng-click="show(notice);">
+                            <md-icon md-font-icon="zmdi zmdi-camera-alt"></md-icon>
+                            <md-tooltip>发布</md-tooltip>
+                        </md-button>
+                        <md-button  class="md-fab app-detail md-mini" ng-click="detail(notice);">
+                            <md-icon md-font-icon="zmdi zmdi-search"></md-icon>
+                            <md-tooltip>查看</md-tooltip>
+                        </md-button>
+                        <md-button class="md-fab app-modify md-mini" ng-click="toEdit(notice);">
+                            <md-icon md-font-icon="zmdi zmdi-edit"></md-icon>
+                            <md-tooltip>更新</md-tooltip>
+                        </md-button>
+                        <md-button class="md-fab app-delete md-mini" id="delete{{notice.id}}"
+                                   ng-click="delete(notice.id);">
+                            <md-icon md-font-icon="zmdi zmdi-delete"></md-icon>
+                            <md-tooltip>删除</md-tooltip>
+                        </md-button>
+                    </td>
+                </tr>
+            </table>
+        </md-card-content>
+    </md-card>
+</md-content>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="edit"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <form name="editForm" ng-submit="save()" novalidate="novalidate">
+            <md-input-container class="md-block">
+                <label>标题</label>
+                <textarea ng-model="notice.title" md-maxlength="500" rows="1" md-select-on-focus></textarea>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>内容</label>
+                <textarea ng-model="notice.content" md-maxlength="2000" rows="1" md-select-on-focus required></textarea>
+            </md-input-container>
+            <div layout="row" layout-align="center">
+                <md-input-container>
+                    <md-button type="submit" class="md-fab app-add md-mini" aria-label="保存">
+                        <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                        <md-tooltip>保存</md-tooltip>
+                    </md-button>
+                </md-input-container>
+                <md-input-container>
+                    <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close('edit')">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                        <md-tooltip>取消</md-tooltip>
+                    </md-button>
+                </md-input-container>
+            </div>
+        </form>
+    </md-content>
+</md-sidenav>
+
+<md-sidenav class="md-sidenav-right md-whiteframe-4dp" style="min-width:30%;" md-component-id="detail"
+            md-disable-backdrop md-whiteframe="4">
+    <md-content layout-padding>
+        <form>
+            <md-input-container class="md-block">
+                <label>标题</label>
+                <textarea ng-model="notice.title" md-select-on-focus readonly></textarea>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>创建人</label>
+                <input md-no-asterisk ng-model="notice.member.realName" md-select-on-focus readonly>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>更新时间</label>
+                <input md-no-asterisk value="{{notice.createAt | date : 'yyyy-MM-dd HH:mm:ss'}}" md-select-on-focus readonly>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>状态</label>
+                <input md-no-asterisk value="{{notice.isShow ? '已发布' : '未发布'}}" md-select-on-focus readonly>
+            </md-input-container>
+            <md-input-container class="md-block">
+                <label>内容</label>
+                <textarea ng-model="notice.content" md-select-on-focus readonly></textarea>
+            </md-input-container>
+
+            <div layout="row" layout-align="center">
+                <md-input-container>
+                    <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close('detail')">
+                        <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                        <md-tooltip>取消</md-tooltip>
+                    </md-button>
+                </md-input-container>
+            </div>
+        </form>
+    </md-content>
+</md-sidenav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

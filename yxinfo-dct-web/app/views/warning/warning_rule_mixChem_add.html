@@ -1,0 +1,66 @@
+<md-dialog aria-label="modify_password">
+    <form name="warnRuleForm">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h3>新增混放规则</h3>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="close()">
+                    <md-icon class="zmdi zmdi-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <md-content class="lc-block">
+                <div layout="row" style="margin-top:20px;">
+                    <md-autocomplete flex-gt-sm md-floating-label="化学品类别"
+                                     md-selected-item="selectedChemCate1"
+                                     md-no-cache="noCache"
+                                     md-search-text-change="querySearchChemCate(selectedText1)"
+                                     md-search-text="selectedText1"
+                                     md-items="cate in querySearchChemCate(selectedText1)"
+                                     md-item-text="cate.fname"
+                                     md-min-length="0">
+                        <md-item-template>
+                            <span md-highlight-text="selectedText1" md-highlight-flags="^i">{{cate.fname}}</span>
+                        </md-item-template>
+                        <md-not-found>
+                            未检索到"{{selectedText1}}".
+                        </md-not-found>
+                    </md-autocomplete>
+                    <md-autocomplete flex-gt-sm md-floating-label="化学品类别"
+                                     md-selected-item="selectedChemCate2"
+                                     md-no-cache="noCache"
+                                     md-search-text-change="querySearchChemCate(selectedText)"
+                                     md-search-text="selectedText"
+                                     md-items="cate in querySearchChemCate(selectedText)"
+                                     md-item-text="cate.fname"
+                                     md-min-length="0">
+                        <md-item-template>
+                            <span md-highlight-text="selectedText" md-highlight-flags="^i">{{cate.fname}}</span>
+                        </md-item-template>
+                        <md-not-found>
+                            未检索到"{{selectedText}}".
+                        </md-not-found>
+                    </md-autocomplete>
+                </div>
+                <md-input-container class="md-block">
+                    <label>说明</label>
+                    <input type="text" name="text" ng-model="text" md-maxlength="100">
+                    <div ng-messages="warnRuleForm.text.$error">
+                        <div ng-message="md-maxlength">说明长度须小于100</div>
+                    </div>
+                </md-input-container>
+            </md-content>
+        </md-dialog-content>
+        <md-dialog-actions layout="row" layout-align="center">
+            <md-button class="md-fab app-detail md-mini" aria-label="保存" ng-click="saveWarnRule()" class="md-primary">
+                <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                <md-tooltip>保存</md-tooltip>
+            </md-button>
+            <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                <md-tooltip>取消</md-tooltip>
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

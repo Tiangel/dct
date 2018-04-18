@@ -1,0 +1,40 @@
+<md-dialog aria-label="modify_password">
+    <form name="warnRuleForm">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h3>新增预警规则</h3>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="close()">
+                    <md-icon class="zmdi zmdi-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+                <md-content class="lc-block" flex>
+                    <h4>例：硫酸(7664-93-9)限一个人在领用3瓶</h4>
+                    <div layout="row">
+                        <div chem-autocomplete></div>
+                        <md-input-container class="md-block" flex-gt-sm>
+                            <label>临界数量</label>
+                            <input type="number" ng-model="beyondNum" md-autofocus/>
+                        </md-input-container>
+                    </div>
+                    <h4> 例：所有试剂不在监控范围内5小时预警</h4>
+                    <md-input-container class="md-block">
+                        <label>临界时间</label>
+                        <input type="number" ng-model="beyondTime" md-autofocus/>
+                    </md-input-container>
+                </md-content>
+        </md-dialog-content>
+        <md-dialog-actions layout="row" layout-align="center">
+            <md-button class="md-fab app-detail md-mini" aria-label="保存" ng-click="saveWarnRule()" class="md-primary">
+                <md-icon md-font-icon="zmdi zmdi-check"></md-icon>
+                <md-tooltip>保存</md-tooltip>
+            </md-button>
+            <md-button class="md-fab app-delete md-mini" aria-label="取消" ng-click="close()">
+                <md-icon md-font-icon="zmdi zmdi-close"></md-icon>
+                <md-tooltip>取消</md-tooltip>
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>
